@@ -1,0 +1,33 @@
+package com.printway.service;
+
+import com.printway.entity.db.Order;
+import com.printway.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class OrderService {
+    @Autowired
+    private OrderRepository orderRepository;
+
+    public Order findById(String id){
+        return  orderRepository.findOne(Integer.parseInt(id));
+    }
+    public Order create(Order order){
+        return  orderRepository.insert(order);
+    }
+    public List<Order> findByTranId(String tranId){
+        return orderRepository.findByTranId(tranId);
+    }
+    public List<Order> updateListOrder(List<Order> orderList){
+        return orderRepository.update(orderList);
+    }
+    public Order updateOrder(Order order){
+        return orderRepository.update(order);
+    }
+    public List<Order> getListOrderByStatus(String status){
+        return orderRepository.findByStatus(status);
+    }
+}
