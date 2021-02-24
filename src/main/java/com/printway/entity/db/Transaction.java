@@ -4,16 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "tbltransaction")
+//@Entity
+//@Table(name = "tbltransaction")
 public class Transaction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private int id;
     @Column(name = "payment_config_id")
     private int paymentConfigId;

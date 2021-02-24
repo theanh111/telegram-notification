@@ -11,14 +11,5 @@ public class TransactionRepository extends BaseRepository<Transaction, Integer> 
         super(Transaction.class);
     }
 
-    @Override
-    public Transaction insert(Transaction entity) {
-        return super.insert(entity);
-    }
-
-    @Override
-    public Transaction findOne(Integer integer) {
-        return super.findOne(integer);
-    }
 
 }

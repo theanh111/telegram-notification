@@ -5,17 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "tblusers")
+//@Entity
+//@Table(name = "tblusers")
 public class TblUserEntity {
-    @Id
+    //    @Id
+    @Column(name = "id")
     private Long id;
     @Column(name = "usr_email")
     private String email;

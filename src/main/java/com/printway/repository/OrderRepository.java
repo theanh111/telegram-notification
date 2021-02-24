@@ -13,20 +13,6 @@ public class OrderRepository extends BaseRepository<Order, Integer> {
         super(Order.class);
     }
 
-    @Override
-    public Order insert(Order entity) {
-        return super.insert(entity);
-    }
-
-    @Override
-    public Order update(Order entity) {
-        return super.update(entity);
-    }
-
-    @Override
-    public Order findOne(Integer integer) {
-        return super.findOne(integer);
-    }
 
     public List<Order> findByTranId(String tranId) {
         String query = "select * from tblorder where tran_id = :tranId";

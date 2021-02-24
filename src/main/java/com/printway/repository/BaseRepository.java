@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class BaseRepository<T, ID extends Serializable> {
+public abstract class BaseRepository<T, ID extends Serializable> {
     @PersistenceContext
     private EntityManager entityManager;
     private final Class entityClass;
@@ -136,11 +136,6 @@ public class BaseRepository<T, ID extends Serializable> {
         return entity;
     }
 
-    @Transactional("transactionManager")
-    public int update(CriteriaUpdate criUpdate) {
-        Query query = entityManager.createQuery(criUpdate);
-        return query.executeUpdate();
-    }
 
     @Transactional("transactionManager")
     public int update(String queryStr, boolean isNative) {

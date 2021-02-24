@@ -19,7 +19,6 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
- *
  * @author Canh Nguyen MrLaptop
  */
 @Configuration
@@ -31,8 +30,6 @@ import java.util.Properties;
 @PropertySource("classpath:config/${spring.profiles.active}/database.properties")
 public class HibernateConfiguration {
 
-    @Value("${db.driver}")
-    private String DB_DRIVER;
 
     @Value("${db.password}")
     private String DB_PASSWORD;
@@ -72,19 +69,13 @@ public class HibernateConfiguration {
     @Value("${dbcp2.pool-prepared-statements}")
     private boolean DBCP_POOL_PREPARED_STATEMENTS;
 
-//    @Value("${hibernate.connection.CharSet}")
-//    private String HIBERNATE_CONNECTION_CHARSET;
-//    @Value("${hibernate.connection.characterEncoding}")
-//    private String HIBERNATE_CONNECTION_CHARSETENCODING;
-//    @Value("${hibernate.connection.useUnicode}")
-//    private String HIBERNATE_CONNECTION_USEUNICODE;
-//
+    //
     @Primary
     @Bean(name = "dataSource")
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource alepayDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(DB_DRIVER);
+//        dataSource.setDriverClassName(DB_DRIVER);
         dataSource.setUrl(DB_URL);
         dataSource.setUsername(DB_USERNAME);
         dataSource.setPassword(DB_PASSWORD);
@@ -110,10 +101,6 @@ public class HibernateConfiguration {
         hibernateProperties.put("hibernate.jdbc.batch_versioned_data", BATCH_VERSION_DATA);
         hibernateProperties.put("hibernate.hbm2ddl.auto", HIBERNATE_HBM2DDL_AUTO);
         hibernateProperties.put("hibernate.current_session_context_class", ENTITYMANAGER_SESSION_CONFIG);
-        //hibernateProperties.put("hibernate.generate_statistics", true); 
-//        hibernateProperties.put("hibernate.connection.CharSet", HIBERNATE_CONNECTION_CHARSET);
-//        hibernateProperties.put("hibernate.connection.characterEncoding", HIBERNATE_CONNECTION_CHARSETENCODING);
-//        hibernateProperties.put("hibernate.connection.useUnicode", HIBERNATE_CONNECTION_USEUNICODE);
         entityManagerFactoryBean.setJpaProperties(hibernateProperties);
         return entityManagerFactoryBean;
     }
