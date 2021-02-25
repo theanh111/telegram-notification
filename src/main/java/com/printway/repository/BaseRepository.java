@@ -1,6 +1,7 @@
 package com.printway.repository;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -11,9 +12,9 @@ import javax.persistence.criteria.CriteriaUpdate;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-
-public abstract class BaseRepository<T, ID extends Serializable> {
-    @PersistenceContext
+@Transactional(readOnly = false)
+public class BaseRepository<T, ID extends Serializable> {
+    @PersistenceContext(unitName = "printwayEntityManagerFactory")
     private EntityManager entityManager;
     private final Class entityClass;
 
@@ -29,13 +30,13 @@ public abstract class BaseRepository<T, ID extends Serializable> {
         entityManager.refresh(entity);
     }
 
-    @Transactional
+    @Transactional("printwayTransactionManager")
     public T insert(T entity) {
         entityManager.persist(entity);
         return entity;
     }
 
-    @Transactional
+    @Transactional("printwayTransactionManager")
     public List<T> insert(List<T> listEntities, int batchSize) {
         if (listEntities != null && !listEntities.isEmpty()) {
             for (int i = 0; i < listEntities.size(); i++) {
@@ -49,7 +50,7 @@ public abstract class BaseRepository<T, ID extends Serializable> {
         return listEntities;
     }
 
-    @Transactional
+    @Transactional("printwayTransactionManager")
     public List<T> insert(List<T> listEntities) {
         return insert(listEntities, 50);
     }
@@ -130,20 +131,20 @@ public abstract class BaseRepository<T, ID extends Serializable> {
 
     //-------------------Query
     //-------------------UPDATE
-    @Transactional("transactionManager")
+    @Transactional("printwayTransactionManager")
     public T update(T entity) {
         entityManager.merge(entity);
         return entity;
     }
 
 
-    @Transactional("transactionManager")
+    @Transactional("printwayTransactionManager")
     public int update(String queryStr, boolean isNative) {
         Query query = buildQuery(queryStr, isNative);
         return query.executeUpdate();
     }
 
-    @Transactional("transactionManager")
+    @Transactional("printwayTransactionManager")
     public List<T> update(List<T> listEntities, int batchSize) {
         if (listEntities != null && !listEntities.isEmpty()) {
             for (int i = 0; i < listEntities.size(); i++) {
@@ -157,12 +158,12 @@ public abstract class BaseRepository<T, ID extends Serializable> {
         return listEntities;
     }
 
-    @Transactional("transactionManager")
+    @Transactional("printwayTransactionManager")
     public List<T> update(List<T> listEntities) {
         return update(listEntities, 50);
     }
 
-    @Transactional("transactionManager")
+    @Transactional("printwayTransactionManager")
     public int update(String queryStr, boolean isNative, Map<String, Object> params) {
         Query query = buildQueryHasParameters(queryStr, isNative, params);
         return query.executeUpdate();

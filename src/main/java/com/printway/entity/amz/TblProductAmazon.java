@@ -3,13 +3,15 @@ package com.printway.entity.amz;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
+import javax.persistence.Id;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TblProductAmazon {
-    @Column(name = "id")
+    @Id
     private Long id;
     @Column(name = "sku")
     private String sku;

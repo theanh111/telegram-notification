@@ -9,10 +9,10 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//@Entity
-//@Table(name = "tblpayment_config")
+@Entity
+@Table(name = "tblpayment_config")
 public class PaymentConfig {
-//    @Id
+    @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;

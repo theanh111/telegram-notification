@@ -3,12 +3,14 @@ package com.printway;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -19,7 +21,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
- * @author Canh Nguyen MrLaptop
+ * @author Tuanlv
  */
 @Configuration
 @EnableTransactionManagement
@@ -27,6 +29,7 @@ import java.util.Properties;
         entityManagerFactoryRef = "entityManagerFactory",
         transactionManagerRef = "transactionManager",
         basePackages = {"com.printway"})
+@EntityScan(basePackages = "com.printway")
 @PropertySource("classpath:config/${spring.profiles.active}/database.properties")
 public class HibernateConfiguration {
 
@@ -71,9 +74,9 @@ public class HibernateConfiguration {
 
     //
     @Primary
-    @Bean(name = "dataSource")
+    @Bean(name = "printwayDataSource")
     @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource alepayDataSource() {
+    public DataSource printwayDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
 //        dataSource.setDriverClassName(DB_DRIVER);
         dataSource.setUrl(DB_URL);
@@ -86,10 +89,10 @@ public class HibernateConfiguration {
     }
 
     @Primary
-    @Bean(name = "entityManagerFactory")
+    @Bean(name = "printwayEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactoryBean.setDataSource(alepayDataSource());
+        entityManagerFactoryBean.setDataSource(printwayDataSource());
         entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         entityManagerFactoryBean.setPackagesToScan(ENTITYMANAGER_PACKAGES_TO_SCAN);
         Properties hibernateProperties = new Properties();
@@ -106,10 +109,21 @@ public class HibernateConfiguration {
     }
 
     @Primary
-    @Bean(name = "transactionManager")
-    public JpaTransactionManager transactionManager(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
+    @Bean(name = "printwayTransactionManager")
+    public JpaTransactionManager transactionManager(@Qualifier("printwayEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
         return transactionManager;
+    }
+
+    @Bean(name = "hibernate5AnnotatedSessionFactory")
+    public LocalSessionFactoryBuilder getLocalSessionFactoryBean() {
+        LocalSessionFactoryBuilder localSessionFactoryBean = new LocalSessionFactoryBuilder(printwayDataSource());
+        localSessionFactoryBean.scanPackages(
+                "com.printway"
+                );
+        localSessionFactoryBean.buildSessionFactory();
+
+        return localSessionFactoryBean;
     }
 }

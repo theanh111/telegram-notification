@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FullProductRequest {
     private String sku;
+    private String category;
     private String title;
     private String brand;
     private String description;

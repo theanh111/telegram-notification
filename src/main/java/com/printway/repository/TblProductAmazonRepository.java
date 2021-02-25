@@ -10,18 +10,34 @@ import java.util.Map;
 @Repository
 public class TblProductAmazonRepository extends BaseRepository<TblProductAmazon, Long> {
     public TblProductAmazonRepository(){
-        super(TblProductAmazonRepository.class);
+        super(TblProductAmazon.class);
     }
     public List<TblProductAmazon> getProductsAmazon(String userId){
-        String query = "select pp.id, pp.sku, pp.product_name," +
-                "ab.brand_name, pt.pro_description, pt.amazon_bullet_print" +
-                "ab.currency, pp.store_sale_price, pp.store_media" +
-                "from tblproduct_post_store pp " +
-                "inner join tblproducts pt on pp.url_file_design = pt.prod_url_design_printer" +
-                "inner join tblamazon_brand ab on pt.amazon_brand_id = ab.id" +
-                "where pp.user_id_post = :userId and pp.store_name = amazon ";
+        String query = "select t1.id, t1.sku, t1.product_name, t3.brand_name,t2.pro_description,t2.amazon_bullet_print,t3.currency,t1.store_sale_price,t1.store_media,t4.cat_name from tblproduct_post_store t1 join tblproducts t2 on t1.product_type_id = t2.id join tblamazon_brand t3 on t2.amazon_brand_id = t3.id join tblcategories t4 on t2.amazon_category_id = t4.id where t1.user_id_post = :userId and t1.store_name = 'amazon'";
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         return query(query, true, params);
     }
+
+    public static void main(String[] args) {
+        String query = "select " +
+                "t1.id," +
+                " t1.sku," +
+                " t1.product_name," +
+                " t3.brand_name," +
+                "    t2.pro_description," +
+                "    t2.amazon_bullet_print," +
+                "    t3.currency," +
+                "    t1.store_sale_price," +
+                "    t1.store_media," +
+                "    t4.cat_name" +
+                "    from tblproduct_post_store t1" +
+                "      join tblproducts t2 on t1.product_type_id = t2.id" +
+                "      join tblamazon_brand t3 on t2.amazon_brand_id = t3.id" +
+                "      join tblcategories t4 on t2.amazon_category_id = t4.id" +
+                "    where t1.user_id_post = :userId and t1.store_name = 'amazon';";
+
+        System.out.println(query.replaceAll("  ",""));
+    }
+
 }
