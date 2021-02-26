@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TblProductAmazon {
     @Id
-    private Long id;
+    private Integer id;
     @Column(name = "sku")
     private String sku;
     @Column(name = "product_name")
@@ -22,11 +23,11 @@ public class TblProductAmazon {
     @Column(name = "pro_description")
     private String description;
     @Column(name = "amazon_bullet_print")
-    private String bulletPoint;
+    private List<String> bulletPoint;
     @Column(name = "currency")
     private String currency;
     @Column(name = "store_sale_price")
     private String price;
     @Column(name = "store_media")
-    private String imageLocation;
+    private List<String> imageLocation;
 }

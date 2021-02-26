@@ -5,12 +5,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.printway.client.BaseRestTemplate;
 import com.printway.client.amazongateway.reponse.GetFeedResponse;
+import com.printway.client.amazongateway.reponse.document.DocumentReportFeedResponse;
 import com.printway.client.paypalgateway.response.OrderCreateResponse;
 import com.printway.entity.amz.FullProductRequest;
 import org.apache.log4j.Logger;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -18,18 +25,58 @@ public class AmazonGateway extends BaseRestTemplate {
     private String baseUrl = "http://localhost:8088/amazon/v1/";
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    public List<GetFeedResponse> submitProduct(List<FullProductRequest> productRequestList) throws JsonProcessingException {
-        String responses = null;
+    public List<GetFeedResponse> submitProduct(List<FullProductRequest> productRequestList) {
+        List<GetFeedResponse> responses = null;
         HttpEntity<List<FullProductRequest>> request = new HttpEntity<>(productRequestList);
         try {
-            responses = getRestTemplate().postForObject(baseUrl + "submit-product" , request, String.class);
-//            order = postForObject( Order.class,baseUrl + "create", request);
+//            String[] data = getRestTemplate().postForObject(baseUrl + "submit-product" , request, String[].class);
+            ResponseEntity<List<GetFeedResponse>> claimResponse = getRestTemplate().exchange(
+                    baseUrl + "submit-product", HttpMethod.POST, request, new ParameterizedTypeReference<List<GetFeedResponse>>(){});
+            if(claimResponse != null && claimResponse.hasBody()) {
+                responses = claimResponse.getBody();
+            }
         } catch (Exception e) {
             logger.info(e);
             throw e;
         }
-        ObjectMapper mapper = new ObjectMapper();
-        List<GetFeedResponse> getFeedResponseList = mapper.readValue(responses, new TypeReference<List<GetFeedResponse>>() {});
-        return getFeedResponseList;
+        return responses;
     }
+
+    public List<GetFeedResponse> getFeedResponses(List<String> feedIdList) throws JsonProcessingException {
+        List<GetFeedResponse> responses = null;
+        HttpEntity<List<String>> request = new HttpEntity<>(feedIdList);
+        try {
+//            String[] data = getRestTemplate().postForObject(baseUrl + "submit-product" , request, String[].class);
+            ResponseEntity<List<GetFeedResponse>> claimResponse = getRestTemplate().exchange(
+                    baseUrl + "get-feed-response", HttpMethod.POST, request, new ParameterizedTypeReference<List<GetFeedResponse>>(){});
+            if(claimResponse != null && claimResponse.hasBody()) {
+                responses = claimResponse.getBody();
+            }
+        } catch (Exception e) {
+            logger.info(e);
+            throw e;
+        }
+        return responses;
+    }
+
+    public List<DocumentReportFeedResponse> getFeedReportList(List<String> feedIdList) throws JsonProcessingException {
+        List<DocumentReportFeedResponse> responses = null;
+        HttpEntity<List<String>> request = new HttpEntity<>(feedIdList);
+        try {
+//            String[] data = getRestTemplate().postForObject(baseUrl + "submit-product" , request, String[].class);
+            ResponseEntity<List<DocumentReportFeedResponse>> claimResponse = getRestTemplate().exchange(
+                    baseUrl + "get-feed-report", HttpMethod.POST, request, new ParameterizedTypeReference<List<DocumentReportFeedResponse>>(){});
+            if(claimResponse != null && claimResponse.hasBody()) {
+                responses = claimResponse.getBody();
+            }
+        } catch (Exception e) {
+            logger.info(e);
+            throw e;
+        }
+        return responses;
+    }
+
+
+
+
 }

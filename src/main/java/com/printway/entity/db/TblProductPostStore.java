@@ -1,6 +1,8 @@
 package com.printway.entity.db;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,12 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 
-@Data
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tblproduct_post_store")
 public class TblProductPostStore {
     @Id
-    private int id;
+    private Integer id;
     @Column(name = "sku")
     private String sku;
     @Column(name = "product_name")
@@ -21,15 +25,15 @@ public class TblProductPostStore {
     @Column(name = "url_file_design")
     private String urlFileDesign;
     @Column(name = "product_type_id")
-    private int prTypeId;
+    private Integer prTypeId;
     @Column(name = "user_id_post")
-    private int userIdPost;
+    private Integer userIdPost;
     @Column(name = "user_id_email")
-    private String userEmail;
+    private String userIdEmail;
     @Column(name = "store_sale_price")
-    private double salePrice;
+    private double storeSalePrice;
     @Column(name = "store_regular_price")
-    private double regularPrice;
+    private double storeRegularPrice;
     @Column(name = "store_media")
     private String storeMedia;
     @Column(name = "store_variant")
@@ -37,19 +41,17 @@ public class TblProductPostStore {
     @Column(name = "store_option")
     private String storeOption;
     @Column(name = "datetime_create")
-    private Timestamp dateTime;
+    private Timestamp dateTimeCreate;
     @Column(name = "datetime_online")
     private String dateTimeOnline;
     @Column(name = "online_store_status")
-    private String storeStatus;
+    private String onlineStoreStatus;
     @Column(name = "store_id")
     private String storeId;
     @Column(name = "product_status")
-    private String prStatus;
+    private String productStatus;
     @Column(name = "store_product_id")
-    private String storePrId;
+    private String storeProductId;
     @Column(name = "store_name")
     private String storeName;
-
-
 }

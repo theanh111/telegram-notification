@@ -3,9 +3,9 @@ package com.printway.restcontroller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.printway.client.amazongateway.AmazonGateway;
 import com.printway.client.amazongateway.reponse.GetFeedResponse;
+import com.printway.client.amazongateway.reponse.document.DocumentReportFeedResponse;
 import com.printway.entity.amz.FullProductRequest;
 import com.printway.entity.amz.TblProductAmazon;
-import com.printway.entity.db.TblProductPostStore;
 import com.printway.repository.PRA;
 import com.printway.repository.PaymentConfigRepository;
 import com.printway.service.ProductAmazonService;
@@ -41,6 +41,16 @@ public class AmazonController {
     @RequestMapping(value = "/get", method = RequestMethod.POST)
     public ResponseEntity<?> getProducts(@RequestBody List<FullProductRequest> productRequestList) throws JsonProcessingException {
             List<GetFeedResponse> responses = amazonGateway.submitProduct(productRequestList);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
+    }
+    @RequestMapping(value = "/gett", method = RequestMethod.POST)
+    public ResponseEntity<?> getFeedResponse(@RequestBody List<String> feedIdList) throws JsonProcessingException {
+        List<GetFeedResponse> responses = amazonGateway.getFeedResponses(feedIdList);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
+    }
+    @RequestMapping(value = "/gettt", method = RequestMethod.POST)
+    public ResponseEntity<?> getReport(@RequestBody List<String> feedIdList) throws JsonProcessingException {
+        List<DocumentReportFeedResponse> responses = amazonGateway.getFeedReportList(feedIdList);
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
