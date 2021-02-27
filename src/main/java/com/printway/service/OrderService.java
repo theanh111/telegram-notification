@@ -8,13 +8,24 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class OrderService {
+public class OrderService implements BasicService<Order>{
     @Autowired
     private OrderRepository orderRepository;
 
     public Order findById(String id){
         return  orderRepository.findOne(Integer.parseInt(id));
     }
+
+    @Override
+    public Order findById(Integer id) {
+        return null;
+    }
+
+    @Override
+    public Order update(Order order) {
+        return null;
+    }
+
     public Order create(Order order){
         return  orderRepository.insert(order);
     }

@@ -64,7 +64,7 @@ public class PaymentService {
 
     @Transactional
     public Transaction captureOrderPaypal(String transactionId) {
-        Transaction transaction = transactionService.findById(transactionId);
+        Transaction transaction = transactionService.findById(Integer.valueOf(transactionId));
         String orderId = transaction.getOrderReturnedId();
         CaptureOrderResponse response = paypalGateway.captureOrder(orderId);
         if (response.getStatus().equals("COMPLETED")) {
@@ -164,7 +164,7 @@ public class PaymentService {
     public PaymentIntent completedPaymentStripe(String paymentIntentId, String transactionId) {
         PaymentIntent paymentIntent = stripeGateway.retrievePaymentIntent(paymentIntentId);
         if (paymentIntent.getStatus().equals("succeeded")) {
-            Transaction transaction = transactionService.findById(transactionId);
+            Transaction transaction = transactionService.findById(Integer.valueOf(transactionId));
             transaction.setStatus("Completed");
             List<Order> orderList = orderService.findByTranId(transactionId);
             for (Order o : orderList) {

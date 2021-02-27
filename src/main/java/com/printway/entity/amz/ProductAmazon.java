@@ -11,11 +11,13 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TblProductAmazon {
+public class ProductAmazon {
     @Id
     private Integer id;
     @Column(name = "sku")
     private String sku;
+    @Column(name = "cat_name")
+    private String category;
     @Column(name = "product_name")
     private String title;
     @Column(name = "brand_name")

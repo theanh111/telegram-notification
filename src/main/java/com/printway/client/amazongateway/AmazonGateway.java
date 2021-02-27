@@ -1,13 +1,10 @@
 package com.printway.client.amazongateway;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.printway.client.BaseRestTemplate;
 import com.printway.client.amazongateway.reponse.GetFeedResponse;
 import com.printway.client.amazongateway.reponse.document.DocumentReportFeedResponse;
-import com.printway.client.paypalgateway.response.OrderCreateResponse;
-import com.printway.entity.amz.FullProductRequest;
+import com.printway.entity.amz.ProductAmazon;
 import org.apache.log4j.Logger;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -15,9 +12,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -25,9 +19,9 @@ public class AmazonGateway extends BaseRestTemplate {
     private String baseUrl = "http://localhost:8088/amazon/v1/";
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    public List<GetFeedResponse> submitProduct(List<FullProductRequest> productRequestList) {
+    public List<GetFeedResponse> submitProduct(List<ProductAmazon> productRequestList) {
         List<GetFeedResponse> responses = null;
-        HttpEntity<List<FullProductRequest>> request = new HttpEntity<>(productRequestList);
+        HttpEntity<List<ProductAmazon>> request = new HttpEntity<>(productRequestList);
         try {
 //            String[] data = getRestTemplate().postForObject(baseUrl + "submit-product" , request, String[].class);
             ResponseEntity<List<GetFeedResponse>> claimResponse = getRestTemplate().exchange(

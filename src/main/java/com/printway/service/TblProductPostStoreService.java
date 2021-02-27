@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TblProductPostStoreService {
+public class TblProductPostStoreService implements BasicService<TblProductPostStore> {
     @Autowired
     private TblProductPostStoreRepository tblProductPostStoreRepository;
 
@@ -16,11 +16,18 @@ public class TblProductPostStoreService {
         return tblProductPostStoreRepository.findOne(id);
     }
 
-    public TblProductPostStore updateOne(TblProductPostStore tblProductPostStore) {
+    @Override
+    public TblProductPostStore update(TblProductPostStore tblProductPostStore) {
         return tblProductPostStoreRepository.update(tblProductPostStore);
+    }
+
+    @Override
+    public TblProductPostStore create(TblProductPostStore tblProductPostStore) {
+        return tblProductPostStoreRepository.insert(tblProductPostStore);
     }
 
     public List<TblProductPostStore> updateList(List<TblProductPostStore> tblProductPostStoreList) {
         return tblProductPostStoreRepository.update(tblProductPostStoreList);
     }
+
 }

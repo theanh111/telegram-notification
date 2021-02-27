@@ -8,13 +8,21 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 
 @Service
-public class TransactionService{
+public class TransactionService implements BasicService<Transaction>{
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public Transaction findById(String id) {
-        return transactionRepository.findOne(Integer.parseInt(id));
+
+    @Override
+    public Transaction findById(Integer id) {
+        return transactionRepository.findOne(id);
     }
+
+    @Override
+    public Transaction update(Transaction transaction) {
+        return transactionRepository.update(transaction);
+    }
+
     public Transaction create(Transaction transaction){
         return transactionRepository.insert(transaction);
     }

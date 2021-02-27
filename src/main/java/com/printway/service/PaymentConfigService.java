@@ -6,11 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentConfigService {
+public class PaymentConfigService implements BasicService<PaymentConfig>{
     @Autowired
     private PaymentConfigRepository paymentConfigRepository;
 
     public PaymentConfig updatePaymentConfig(PaymentConfig paymentConfig) {
+        return paymentConfigRepository.update(paymentConfig);
+    }
+
+    @Override
+    public PaymentConfig findById(Integer id) {
+        return paymentConfigRepository.findOne(id);
+    }
+
+    @Override
+    public PaymentConfig update(PaymentConfig paymentConfig) {
         return paymentConfigRepository.update(paymentConfig);
     }
 

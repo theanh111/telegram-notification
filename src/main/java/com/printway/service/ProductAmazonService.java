@@ -1,7 +1,8 @@
 package com.printway.service;
 
-import com.printway.entity.amz.TblProductAmazon;
-import com.printway.repository.TblProductAmazonRepository;
+import com.printway.entity.amz.ProductAmazon;
+import com.printway.entity.amz.ProductCustomize;
+import com.printway.repository.ProductAmazonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +11,13 @@ import java.util.List;
 @Service
 public class ProductAmazonService {
     @Autowired
-    private TblProductAmazonRepository tblProductAmazonRepository;
+    private ProductAmazonRepository productAmazonRepository;
 
-    public List<TblProductAmazon> getProductsAmazon(String userId){
-        return tblProductAmazonRepository.getProductsAmazon(userId);
+    public List<ProductAmazon> getProductsAmazon(String userId){
+        return productAmazonRepository.getProductsAmazon(userId);
     }
+    public ProductCustomize getCustomTemplate(String sku){
+        return productAmazonRepository.getCustomTemplate(sku);
+    }
+
 }
