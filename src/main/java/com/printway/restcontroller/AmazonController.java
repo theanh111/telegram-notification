@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.printway.client.amazongateway.AmazonGateway;
 import com.printway.entity.amz.ProductAmazon;
 import com.printway.entity.amz.ProductCustomize;
-import com.printway.entity.db.TblProductPostStore;
 import com.printway.exception.BaseException;
 import com.printway.repository.PaymentConfigRepository;
 import com.printway.repository.ProductAmazonRepository;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -38,7 +36,7 @@ public class AmazonController extends BaseController {
     private AmazonGateway amazonGateway;
 
     @RequestMapping(value = "/{userId}/get", method = RequestMethod.GET)
-    public ResponseEntity<?> getProducts(@PathVariable String userId) {
+    public ResponseEntity<?> getProducts(@PathVariable String userId) throws JsonProcessingException {
 //        List<TblProductAmazon> productAmazonList = amazonService.getProductsAmazon(userId);
         List<ProductAmazon> productAmazonList = productAmazonRepository.getProductsAmazon(userId);
         return new ResponseEntity<List<ProductAmazon>>(productAmazonList, HttpStatus.OK);
@@ -49,23 +47,29 @@ public class AmazonController extends BaseController {
         ProductCustomize productCustomize = productAmazonRepository.getCustomTemplate("PW_TEST_X05");
         return new ResponseEntity<>(productCustomize, HttpStatus.OK);
     }
-    @RequestMapping(value = "/check", method = RequestMethod.POST)
-    public ResponseEntity<?> checkProduct(@RequestBody String cookie) throws IOException {
-        List<String> skuList = new ArrayList<>();
-        skuList.add("akisote_shirt_zYO0LsLUCMQ");
-        List<TblProductPostStore> productCustomize = amazonService.checkCustomize(skuList, cookie);
-        return new ResponseEntity<>(productCustomize, HttpStatus.OK);
+
+    @RequestMapping(value = "/{userId}/check-customize", method = RequestMethod.POST)
+    public ResponseEntity<?> checkProduct(@PathVariable String userId, @RequestBody List<String> skuList) throws IOException {
+        try {
+            success(amazonService.checkCustomize(skuList, userId));
+        } catch (BaseException e) {
+            unSuccess(e);
+        }
+        return ResponseEntity.status(status).body(body);
     }
-    @RequestMapping(value = "/custom", method = RequestMethod.POST)
-    public ResponseEntity<?> custom(@RequestBody String cookie) throws IOException {
-        List<String> skuList = new ArrayList<>();
-        skuList.add("akisote_shirt_zj31K4artpM");
-        success(amazonService.customize(skuList, cookie));
+
+    @RequestMapping(value = "/{userId}/customize", method = RequestMethod.POST)
+    public ResponseEntity<?> custom(@PathVariable String userId, @RequestBody List<String> skuList) throws IOException {
+        try {
+            success(amazonService.customize(skuList, userId));
+        } catch (BaseException e) {
+            unSuccess(e);
+        }
         return ResponseEntity.status(status).body(body);
     }
 
     @RequestMapping(value = "/{userId}/submit-product", method = RequestMethod.POST)
-    public ResponseEntity<?> submitProducts(@PathVariable String userId) {
+    public ResponseEntity<?> submitProducts(@PathVariable String userId) throws JsonProcessingException {
         try {
             success(amazonService.submitProducts(userId));
         } catch (BaseException e) {
@@ -73,6 +77,7 @@ public class AmazonController extends BaseController {
         }
         return ResponseEntity.status(status).body(body);
     }
+
     @RequestMapping(value = "/{userId}/add-cookie", method = RequestMethod.POST)
     public ResponseEntity<?> addCookie(@PathVariable String userId, @RequestBody String cookie) {
         try {
@@ -82,5 +87,18 @@ public class AmazonController extends BaseController {
         }
         return ResponseEntity.status(status).body(body);
     }
+
+    @RequestMapping(value = "/get-feed-response", method = RequestMethod.POST)
+    public ResponseEntity<?> getFeedResponse(@RequestBody List<String> feedIdList) throws JsonProcessingException {
+            success(amazonService.getFeedResponses(feedIdList));
+        return ResponseEntity.status(status).body(body);
+    }
+
+    @RequestMapping(value = "/get-feed-report", method = RequestMethod.POST)
+    public ResponseEntity<?> getFeedReport(@RequestBody List<String> feedIdList) throws JsonProcessingException {
+        success(amazonService.getFeedReportList(feedIdList));
+        return ResponseEntity.status(status).body(body);
+    }
+
 
 }

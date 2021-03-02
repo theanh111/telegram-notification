@@ -37,7 +37,7 @@ public class TblUserEntity {
     @Column(name = "dob")
     private Date dob;
     @Column(name = "usr_status")
-    private String userStatus;
+    private char userStatus;
     @Column(name = "list_account_store")
     private String listAccountStore;
     @Column(name = "usr_gender")

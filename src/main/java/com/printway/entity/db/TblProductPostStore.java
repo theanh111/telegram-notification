@@ -54,4 +54,6 @@ public class TblProductPostStore {
     private String storeProductId;
     @Column(name = "store_name")
     private String storeName;
+    @Column(name = "amazon_auto_custom")
+    private Integer custom;
 }

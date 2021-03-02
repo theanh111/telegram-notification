@@ -12,8 +12,13 @@ public class TblProductPostStoreService implements BasicService<TblProductPostSt
     @Autowired
     private TblProductPostStoreRepository tblProductPostStoreRepository;
 
+    @Override
     public TblProductPostStore findById(Integer id) {
         return tblProductPostStoreRepository.findOne(id);
+    }
+
+    public TblProductPostStore findBySku(String sku) {
+        return tblProductPostStoreRepository.findBySku(sku);
     }
 
     @Override

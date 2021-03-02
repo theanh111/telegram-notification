@@ -1,5 +1,6 @@
 package com.printway.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.printway.entity.amz.ProductAmazon;
 import com.printway.entity.amz.ProductCustomize;
 import com.printway.repository.ProductAmazonRepository;
@@ -13,7 +14,7 @@ public class ProductAmazonService {
     @Autowired
     private ProductAmazonRepository productAmazonRepository;
 
-    public List<ProductAmazon> getProductsAmazon(String userId){
+    public List<ProductAmazon> getProductsAmazon(String userId) throws JsonProcessingException {
         return productAmazonRepository.getProductsAmazon(userId);
     }
     public ProductCustomize getCustomTemplate(String sku){
