@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Error {
-    private String code = null;
-    private String message = null;
-    private String details = null;
+    private String code;
+    private String message;
+    private String details;
 }

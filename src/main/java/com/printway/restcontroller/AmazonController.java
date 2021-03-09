@@ -2,6 +2,7 @@ package com.printway.restcontroller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.printway.client.amazongateway.AmazonGateway;
+import com.printway.client.amazongateway.reponse.orders.InputGetOrders;
 import com.printway.entity.amz.ProductAmazon;
 import com.printway.entity.amz.ProductCustomize;
 import com.printway.exception.BaseException;
@@ -106,5 +107,16 @@ public class AmazonController extends BaseController {
         return ResponseEntity.status(status).body(body);
     }
 
+    @RequestMapping(value = "/get-orders", method = RequestMethod.POST)
+    public ResponseEntity<?> getOrders(@RequestBody InputGetOrders inputGetOrders) throws JsonProcessingException {
+        success(amazonService.getOrders(inputGetOrders));
+        return ResponseEntity.status(status).body(body);
+    }
+
+    @RequestMapping(value = "/get-order-address", method = RequestMethod.POST)
+    public ResponseEntity<?> getOrderAddress(@RequestBody String orderId) throws JsonProcessingException {
+        success(amazonService.getOrderAddress(orderId));
+        return ResponseEntity.status(status).body(body);
+    }
 
 }

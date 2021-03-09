@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.printway.client.BaseRestTemplate;
 import com.printway.client.amazongateway.reponse.GetFeedResponse;
 import com.printway.client.amazongateway.reponse.document.DocumentReportFeedResponse;
+import com.printway.client.amazongateway.reponse.orders.GetOrderAddressResponse;
 import com.printway.client.amazongateway.reponse.orders.GetOrderResponse;
+import com.printway.client.amazongateway.reponse.orders.GetOrdersResponse;
+import com.printway.client.amazongateway.reponse.orders.InputGetOrders;
 import com.printway.entity.amz.ProductAmazon;
 import org.apache.log4j.Logger;
 import org.springframework.core.ParameterizedTypeReference;
@@ -77,7 +80,6 @@ public class AmazonGateway extends BaseRestTemplate {
         HttpEntity<String> request = new HttpEntity<>(orderId);
         try {
             response = getRestTemplate().postForObject(baseUrl + "get-order", request, GetOrderResponse.class);
-            logger.info("Order Id: " + response.getPayload().getAmazonOrderId());
         } catch (Exception e) {
             logger.info(e);
             throw e;
@@ -85,5 +87,27 @@ public class AmazonGateway extends BaseRestTemplate {
         return response;
     }
 
+    public GetOrdersResponse getOrders(InputGetOrders inputGetOrders) throws JsonProcessingException {
+        GetOrdersResponse responses;
+        HttpEntity<InputGetOrders> request = new HttpEntity<>(inputGetOrders);
+        try {
+            responses = getRestTemplate().postForObject(baseUrl + "get-orders", request, GetOrdersResponse.class);
+        } catch (Exception e) {
+            logger.info(e);
+            throw e;
+        }
+        return responses;
+    }
 
+    public GetOrderAddressResponse getOrderAddress(String orderId) throws JsonProcessingException {
+        GetOrderAddressResponse response;
+        HttpEntity<String> request = new HttpEntity<>(orderId);
+        try {
+            response = getRestTemplate().postForObject(baseUrl + "get-order-address", request, GetOrderAddressResponse.class);
+        } catch (Exception e) {
+            logger.info(e);
+            throw e;
+        }
+        return response;
+    }
 }
