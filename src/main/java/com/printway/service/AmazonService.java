@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.printway.client.amazongateway.AmazonGateway;
 import com.printway.client.amazongateway.reponse.GetFeedResponse;
 import com.printway.client.amazongateway.reponse.document.DocumentReportFeedResponse;
+import com.printway.client.amazongateway.reponse.orders.GetOrderResponse;
 import com.printway.entity.amz.ProductAmazon;
 import com.printway.entity.amz.ProductCustomize;
 import com.printway.entity.db.TblProductPostStore;
@@ -132,5 +133,10 @@ public class AmazonService {
     public List<DocumentReportFeedResponse> getFeedReportList(List<String> feedIdList) throws JsonProcessingException {
         List<DocumentReportFeedResponse> responses = amazonGateway.getFeedReportList(feedIdList);
         return responses;
+    }
+
+    public GetOrderResponse getSingleOrder(String orderId) throws JsonProcessingException {
+        GetOrderResponse response = amazonGateway.getSingleOrder(orderId);
+        return response;
     }
 }

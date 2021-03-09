@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.printway.client.BaseRestTemplate;
 import com.printway.client.amazongateway.reponse.GetFeedResponse;
 import com.printway.client.amazongateway.reponse.document.DocumentReportFeedResponse;
+import com.printway.client.amazongateway.reponse.orders.GetOrderResponse;
 import com.printway.entity.amz.ProductAmazon;
 import org.apache.log4j.Logger;
 import org.springframework.core.ParameterizedTypeReference;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -70,7 +72,18 @@ public class AmazonGateway extends BaseRestTemplate {
         return responses;
     }
 
-
+    public GetOrderResponse getSingleOrder(String orderId) throws JsonProcessingException {
+        GetOrderResponse response;
+        HttpEntity<String> request = new HttpEntity<>(orderId);
+        try {
+            response = getRestTemplate().postForObject(baseUrl + "get-order", request, GetOrderResponse.class);
+            logger.info("Order Id: " + response.getPayload().getAmazonOrderId());
+        } catch (Exception e) {
+            logger.info(e);
+            throw e;
+        }
+        return response;
+    }
 
 
 }

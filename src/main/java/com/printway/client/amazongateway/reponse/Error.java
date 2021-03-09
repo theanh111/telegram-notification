@@ -9,12 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Error {
-    @SerializedName("code")
     private String code = null;
-
-    @SerializedName("message")
     private String message = null;
-
-    @SerializedName("details")
     private String details = null;
 }

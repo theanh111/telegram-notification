@@ -100,5 +100,11 @@ public class AmazonController extends BaseController {
         return ResponseEntity.status(status).body(body);
     }
 
+    @RequestMapping(value = "/get-order", method = RequestMethod.POST)
+    public ResponseEntity<?> getSingleOrder(@RequestBody String orderId) throws JsonProcessingException {
+        success(amazonService.getSingleOrder(orderId));
+        return ResponseEntity.status(status).body(body);
+    }
+
 
 }
