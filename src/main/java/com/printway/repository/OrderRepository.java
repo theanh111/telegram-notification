@@ -13,7 +13,6 @@ public class OrderRepository extends BaseRepository<Order, Long> {
         super(Order.class);
     }
 
-
     public List<Order> findByTranId(String tranId) {
         String query = "select * from tblorder where tran_id = :tranId";
         Map<String, Object> params = new HashMap<>();

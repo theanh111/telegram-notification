@@ -25,6 +25,7 @@ public class OrderService implements BasicService<Order>{
     public Order create(Order order){
         return  orderRepository.insert(order);
     }
+
     public List<Order> findByTranId(String tranId){
         return orderRepository.findByTranId(tranId);
     }
