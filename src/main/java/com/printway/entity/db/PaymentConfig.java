@@ -26,9 +26,9 @@ public class PaymentConfig {
     private String sellerNonce;
     @Column(name = "user_id")
     private int userId;
-    @Column(name = "customer_id_stripe")
-    private String cusStripeId;
-    @Column(name = "setup_intent_id_stripe")
-    private String setUpIntentId;
+//    @Column(name = "customer_id_stripe")
+//    private String cusStripeId;
+//    @Column(name = "setup_intent_id_stripe")
+//    private String setUpIntentId;
 
 }

@@ -12,13 +12,9 @@ public class OrderService implements BasicService<Order>{
     @Autowired
     private OrderRepository orderRepository;
 
-    public Order findById(String id){
-        return  orderRepository.findOne(Integer.parseInt(id));
-    }
-
     @Override
     public Order findById(Integer id) {
-        return null;
+        return orderRepository.findOne(Long.valueOf(id));
     }
 
     @Override

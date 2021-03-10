@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -12,7 +13,7 @@ import java.util.List;
 public class Order {
     private String amazonOrderId;
     private String sellerOrderId;
-    private String purchaseDate;
+    private Date purchaseDate;
     private String lastUpdateDate;
     private String orderStatus;
     private String fulfillmentChannel;

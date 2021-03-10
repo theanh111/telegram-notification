@@ -6,10 +6,7 @@ import com.google.gson.JsonObject;
 import com.printway.client.amazongateway.AmazonGateway;
 import com.printway.client.amazongateway.reponse.GetFeedResponse;
 import com.printway.client.amazongateway.reponse.document.DocumentReportFeedResponse;
-import com.printway.client.amazongateway.reponse.orders.GetOrderAddressResponse;
-import com.printway.client.amazongateway.reponse.orders.GetOrderResponse;
-import com.printway.client.amazongateway.reponse.orders.GetOrdersResponse;
-import com.printway.client.amazongateway.reponse.orders.InputGetOrders;
+import com.printway.client.amazongateway.reponse.orders.*;
 import com.printway.entity.amz.ProductAmazon;
 import com.printway.entity.amz.ProductCustomize;
 import com.printway.entity.db.TblProductPostStore;
@@ -136,20 +133,5 @@ public class AmazonService {
     public List<DocumentReportFeedResponse> getFeedReportList(List<String> feedIdList) throws JsonProcessingException {
         List<DocumentReportFeedResponse> responses = amazonGateway.getFeedReportList(feedIdList);
         return responses;
-    }
-
-    public GetOrderResponse getSingleOrder(String orderId) throws JsonProcessingException {
-        GetOrderResponse response = amazonGateway.getSingleOrder(orderId);
-        return response;
-    }
-
-    public GetOrdersResponse getOrders(InputGetOrders inputGetOrders) throws JsonProcessingException {
-        GetOrdersResponse responses = amazonGateway.getOrders(inputGetOrders);
-        return responses;
-    }
-
-    public GetOrderAddressResponse getOrderAddress(String orderId) throws JsonProcessingException {
-        GetOrderAddressResponse response = amazonGateway.getOrderAddress(orderId);
-        return response;
     }
 }

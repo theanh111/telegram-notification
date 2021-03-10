@@ -100,23 +100,4 @@ public class AmazonController extends BaseController {
         success(amazonService.getFeedReportList(feedIdList));
         return ResponseEntity.status(status).body(body);
     }
-
-    @RequestMapping(value = "/get-order", method = RequestMethod.POST)
-    public ResponseEntity<?> getSingleOrder(@RequestBody String orderId) throws JsonProcessingException {
-        success(amazonService.getSingleOrder(orderId));
-        return ResponseEntity.status(status).body(body);
-    }
-
-    @RequestMapping(value = "/get-orders", method = RequestMethod.POST)
-    public ResponseEntity<?> getOrders(@RequestBody InputGetOrders inputGetOrders) throws JsonProcessingException {
-        success(amazonService.getOrders(inputGetOrders));
-        return ResponseEntity.status(status).body(body);
-    }
-
-    @RequestMapping(value = "/get-order-address", method = RequestMethod.POST)
-    public ResponseEntity<?> getOrderAddress(@RequestBody String orderId) throws JsonProcessingException {
-        success(amazonService.getOrderAddress(orderId));
-        return ResponseEntity.status(status).body(body);
-    }
-
 }

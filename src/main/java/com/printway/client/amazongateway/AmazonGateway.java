@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.printway.client.BaseRestTemplate;
 import com.printway.client.amazongateway.reponse.GetFeedResponse;
 import com.printway.client.amazongateway.reponse.document.DocumentReportFeedResponse;
-import com.printway.client.amazongateway.reponse.orders.GetOrderAddressResponse;
-import com.printway.client.amazongateway.reponse.orders.GetOrderResponse;
-import com.printway.client.amazongateway.reponse.orders.GetOrdersResponse;
-import com.printway.client.amazongateway.reponse.orders.InputGetOrders;
+import com.printway.client.amazongateway.reponse.orders.*;
 import com.printway.entity.amz.ProductAmazon;
 import org.apache.log4j.Logger;
 import org.springframework.core.ParameterizedTypeReference;
@@ -109,5 +106,41 @@ public class AmazonGateway extends BaseRestTemplate {
             throw e;
         }
         return response;
+    }
+
+    public GetOrderBuyerInfoResponse getOrderBuyerOrderInfo(String orderId) throws JsonProcessingException {
+        GetOrderBuyerInfoResponse response;
+        HttpEntity<String> request = new HttpEntity<>(orderId);
+        try {
+            response = getRestTemplate().postForObject(baseUrl + "get-order-buyer-info", request, GetOrderBuyerInfoResponse.class);
+        } catch (Exception e) {
+            logger.info(e);
+            throw e;
+        }
+        return response;
+    }
+
+    public GetOrderItemsResponse getOrderItems(String orderId, String nextToken) throws JsonProcessingException {
+        GetOrderItemsResponse responses;
+        HttpEntity<String> request = new HttpEntity<>(orderId);
+        try {
+            responses = getRestTemplate().postForObject(baseUrl + "get-order-items", request, GetOrderItemsResponse.class);
+        } catch (Exception e) {
+            logger.info(e);
+            throw e;
+        }
+        return responses;
+    }
+
+    public GetOrderItemsBuyerInfoResponse getOrderItemsBuyerInfo(String orderId, String nextToken) throws JsonProcessingException {
+        GetOrderItemsBuyerInfoResponse responses;
+        HttpEntity<String> request = new HttpEntity<>(orderId);
+        try {
+            responses = getRestTemplate().postForObject(baseUrl + "get-order-items-buyer-info", request, GetOrderItemsBuyerInfoResponse.class);
+        } catch (Exception e) {
+            logger.info(e);
+            throw e;
+        }
+        return responses;
     }
 }

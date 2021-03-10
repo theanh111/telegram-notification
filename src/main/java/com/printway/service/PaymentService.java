@@ -49,9 +49,9 @@ public class PaymentService {
         Transaction updateTransaction = transactionService.create(transaction);
         double totalAmount = 0;
         for (Order o : orderList) {
-            totalAmount += o.getAmount();
+            totalAmount += o.getOrdPrice();
             o.setUserId(Integer.parseInt(userId));
-            o.setTransactionId(String.valueOf(updateTransaction.getId()));
+//            o.setTransactionId(String.valueOf(updateTransaction.getId()));
             orderService.create(o);
         }
         transaction.setAmount(totalAmount);
@@ -71,7 +71,7 @@ public class PaymentService {
             transaction.setStatus("Completed");
             List<Order> orderList = orderService.findByTranId(transactionId);
             for (Order o : orderList) {
-                o.setStatus("Paid");
+                o.setOrderStatus(0);
             }
             orderService.updateListOrder(orderList);
             transactionService.updateTransaction(transaction);
@@ -121,7 +121,7 @@ public class PaymentService {
         List<PayoutItem> items = new ArrayList<>();
         double amount = 0;
         for (Order o : orderList) {
-            amount += o.getAmount();
+            amount += o.getOrdPrice();
         }
         items.add(new PayoutItem().senderItemId(StringUtils.randomString()).note("Pay for new orders")
                 .receiver("tuan2-facilitator@mbox.re").amount(new Currency().currency("USD").value(String.valueOf(amount))));
@@ -148,9 +148,9 @@ public class PaymentService {
         Transaction updateTransaction = transactionService.create(transaction);
         Long totalAmount = 0L;
         for (Order o : orderList) {
-            totalAmount += Double.valueOf(o.getAmount()).longValue();
+            totalAmount += Double.valueOf(o.getOrdPrice()).longValue();
             o.setUserId(Integer.parseInt(userId));
-            o.setTransactionId(String.valueOf(updateTransaction.getId()));
+//            o.setTransactionId(String.valueOf(updateTransaction.getId()));
             orderService.create(o);
         }
         transaction.setAmount(totalAmount);
@@ -168,7 +168,7 @@ public class PaymentService {
             transaction.setStatus("Completed");
             List<Order> orderList = orderService.findByTranId(transactionId);
             for (Order o : orderList) {
-                o.setStatus("Paid");
+                o.setOrderStatus(0);
             }
             orderService.updateListOrder(orderList);
             transactionService.updateTransaction(transaction);
@@ -180,13 +180,13 @@ public class PaymentService {
         PaymentConfig paymentConfig = new PaymentConfig();
         paymentConfig.setUserId(Integer.parseInt(userId));
         Customer customer = stripeGateway.createCustomer();
-        paymentConfig.setCusStripeId(customer.getId());
+//        paymentConfig.setCusStripeId(customer.getId());
         SetupIntent setupIntent = stripeGateway.createSetupIntent(customer.getId());
-        paymentConfig.setSetUpIntentId(setupIntent.getId());
+//        paymentConfig.setSetUpIntentId(setupIntent.getId());
         PaymentConfig updatePmcf = paymentConfigService.create(paymentConfig);
         PaymentResponse paymentResponse = new PaymentResponse();
-        paymentConfig.setCusStripeId(customer.getId());
-        paymentConfig.setSetUpIntentId(setupIntent.getId());
+//        paymentConfig.setCusStripeId(customer.getId());
+//        paymentConfig.setSetUpIntentId(setupIntent.getId());
         Map<String, Object> data = new HashMap<>();
         data.put("payment_config_id", updatePmcf.getId());
         paymentResponse.setClientSecret(setupIntent.getClientSecret());

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class OrderRepository extends BaseRepository<Order, Integer> {
+public class OrderRepository extends BaseRepository<Order, Long> {
     public OrderRepository() {
         super(Order.class);
     }

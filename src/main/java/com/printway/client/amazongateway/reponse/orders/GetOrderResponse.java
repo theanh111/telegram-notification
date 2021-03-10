@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class GetOrderResponse {
     private Order payload;
-    private List<String> errors;
+    private List<Error> errors;
 }
