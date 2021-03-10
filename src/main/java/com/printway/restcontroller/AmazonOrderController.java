@@ -24,8 +24,8 @@ public class AmazonOrderController extends BaseController {
     private AmazonOrderService amazonOrderService;
 
     @RequestMapping(value = "/get-orders", method = RequestMethod.POST)
-    public ResponseEntity<?> getOrders(@RequestBody InputGetOrders inputGetOrders) throws JsonProcessingException {
-        success(amazonOrderService.getOrders(inputGetOrders));
-        return ResponseEntity.status(status).body(body);
+    public ResponseEntity<?> getOrders(@RequestBody InputGetOrders inputGetOrders) throws JsonProcessingException, Exception {
+        amazonOrderService.getOrders(inputGetOrders);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
