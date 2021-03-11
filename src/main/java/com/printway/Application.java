@@ -24,7 +24,7 @@ public class Application extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         if (System.getProperty("spring.profiles.active") == null) {
-            System.setProperty("spring.profiles.active", "prod");
+            System.setProperty("spring.profiles.active", "dev");
         }
         ApplicationContext ctx = SpringApplication.run(applicationClass, args);
 //        SpringApplication.run(Application.class, args);

@@ -1,16 +1,23 @@
 package com.printway.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.printway.entity.db.Order;
 import com.printway.repository.OrderRepository;
+import com.printway.repository.ProductAmazonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class OrderService implements BasicService<Order>{
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private ProductAmazonRepository productAmazonRepository;
 
     @Override
     public Order findById(Integer id) {
@@ -37,5 +44,9 @@ public class OrderService implements BasicService<Order>{
     }
     public List<Order> getListOrderByStatus(String status){
         return orderRepository.findByStatus(status);
+    }
+
+    public String findNewestOrderDate() throws ParseException {
+        return productAmazonRepository.findNewestOrderDate();
     }
 }

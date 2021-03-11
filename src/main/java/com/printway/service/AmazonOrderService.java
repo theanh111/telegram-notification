@@ -18,12 +18,16 @@ public class AmazonOrderService {
     @Autowired
     private OrderService orderService;
 
-    public void getOrders(InputGetOrders inputGetOrders) throws JsonProcessingException, Exception {
-//        RandomStringGenerator randomStringGenerator = new RandomStringGenerator();
+    public void getNewestOrders(InputGetOrders inputGetOrders) throws Exception {
+        String date = orderService.findNewestOrderDate();
+        inputGetOrders.setCreatedAfter(date);
+        getOrders(inputGetOrders);
+    }
+
+    public void getOrders(InputGetOrders inputGetOrders) throws Exception {
         GetOrdersResponse ordersResponse = amazonGateway.getOrders(inputGetOrders);
         OrderList orderList = ordersResponse.getPayload().getOrders();
         for (int i = 0; i < orderList.size(); i++) {
-//            String randomOrderId = "#" + randomStringGenerator.generateRandomString();
             String amazonOrderId = orderList.get(i).getAmazonOrderId();
             GetOrderItemsResponse getOrderItemsResponse = amazonGateway.getOrderItems(amazonOrderId, null);
             OrderItemList orderItemList = getOrderItemsResponse.getPayload().getOrderItems();
@@ -35,20 +39,13 @@ public class AmazonOrderService {
             Date localDate = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             for (int j = 0; j < orderItemList.size(); j++) {
-                System.out.println(i + ") Amazon Order ID: " + orderList.get(i).getAmazonOrderId());
                 Order order = new Order();
                 OrderItem orderItem = orderItemList.get(j);
                 com.printway.client.amazongateway.reponse.orders.Order orderInfo = getOrderResponse.getPayload();
                 OrderBuyerInfo orderBuyerInfo = getOrderBuyerInfoResponse.getPayload();
                 String currentDate = formatter.format(localDate);
                 if (!orderInfo.getOrderStatus().equals("CANCELED")) {
-                    if (orderInfo.getOrderStatus().equals("SHIPPED")) {
-                        order.setOrderStatus(1);
-                        System.out.println("- Order status: " + orderInfo.getOrderStatus());
-                    } else {
-                        order.setOrderStatus(0);
-                        System.out.println("- Order status: " + orderInfo.getOrderStatus());
-                    }
+                    order.setOrderStatus(0);
                     order.setOrderId(orderInfo.getSellerOrderId());
                     order.setDateOrder(orderList.get(i).getPurchaseDate());
                     order.setProductName(orderItem.getTitle());
@@ -76,10 +73,8 @@ public class AmazonOrderService {
                     order.setUsername("null");
                     order.setOrderStoreId(amazonOrderId);
                     order.setOrdStoreInfomation("{\"store_id\":7,\"store_name\":\"Amazon\",\"platform\":\"Amazon\"}");
+                    order.setPaymentStatus(0);
                     orderService.create(order);
-                    System.out.println("Stored to Database, Amazon Order ID: " + amazonOrderId);
-                } else {
-                    System.out.println(" == This order is Canceled from Amazon! ==");
                 }
             }
         }

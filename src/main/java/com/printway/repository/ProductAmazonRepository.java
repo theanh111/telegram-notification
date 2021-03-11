@@ -13,13 +13,31 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public class ProductAmazonRepository {
     @Autowired
     private EntityManagerFactory emf;
+
+    public String findNewestOrderDate() throws ParseException {
+        EntityManager em = emf.createEntityManager();
+        String sqlQuery = "SELECT max(date_order) FROM tblorders where ord_store_infomation like '%Amazon%'";
+        Query query = em.createNativeQuery(sqlQuery);
+        List<Timestamp> stringList = query.getResultList();
+        Timestamp data = stringList.get(0);
+        String date = data.toString();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateTest = formatter.parse(date);
+        String dateFormat = formatter.format(dateTest);
+        em.close();
+        return dateFormat;
+    }
 
     public List<ProductAmazon> getProductsAmazon(String userId) throws JsonProcessingException {
         EntityManager em = emf.createEntityManager();
@@ -37,8 +55,8 @@ public class ProductAmazonRepository {
         em.close();
         List<ProductAmazon> list = convertProductAmazon(resultList);
         return list;
-
     }
+
     public ProductCustomize getCustomTemplate(String sku){
         EntityManager em = emf.createEntityManager();
         //em.getTransaction().begin( );

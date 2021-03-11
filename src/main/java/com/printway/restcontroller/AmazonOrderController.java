@@ -28,4 +28,10 @@ public class AmazonOrderController extends BaseController {
         amazonOrderService.getOrders(inputGetOrders);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/get-newest-orders", method = RequestMethod.POST)
+    public ResponseEntity<?> getNewestOrders(@RequestBody InputGetOrders inputGetOrders) throws JsonProcessingException, Exception {
+        amazonOrderService.getNewestOrders(inputGetOrders);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }
