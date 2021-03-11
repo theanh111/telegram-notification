@@ -19,11 +19,11 @@ public class AmazonOrderService {
     private OrderService orderService;
 
     public void getOrders(InputGetOrders inputGetOrders) throws JsonProcessingException, Exception {
-        RandomStringGenerator randomStringGenerator = new RandomStringGenerator();
+//        RandomStringGenerator randomStringGenerator = new RandomStringGenerator();
         GetOrdersResponse ordersResponse = amazonGateway.getOrders(inputGetOrders);
         OrderList orderList = ordersResponse.getPayload().getOrders();
         for (int i = 0; i < orderList.size(); i++) {
-            String randomOrderId = "#" + randomStringGenerator.generateRandomString();
+//            String randomOrderId = "#" + randomStringGenerator.generateRandomString();
             String amazonOrderId = orderList.get(i).getAmazonOrderId();
             GetOrderItemsResponse getOrderItemsResponse = amazonGateway.getOrderItems(amazonOrderId, null);
             OrderItemList orderItemList = getOrderItemsResponse.getPayload().getOrderItems();
@@ -49,7 +49,7 @@ public class AmazonOrderService {
                         order.setOrderStatus(0);
                         System.out.println("- Order status: " + orderInfo.getOrderStatus());
                     }
-                    order.setOrderId(randomOrderId);
+                    order.setOrderId(orderInfo.getSellerOrderId());
                     order.setDateOrder(orderList.get(i).getPurchaseDate());
                     order.setProductName(orderItem.getTitle());
                     order.setVariantTitle("null");
