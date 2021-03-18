@@ -31,9 +31,9 @@ public class NewOrderService implements BasicService<NewOrder>{
         return null;
     }
 
-    public List<Integer> countOrder(String currentDate) throws ParseException {
-        return newOrderRepository.countOrder(currentDate);
-    }
+//    public List<Integer> countOrder(String currentDate) throws ParseException {
+//        return newOrderRepository.countOrder(currentDate);
+//    }
 
     public List<Integer> countPrintQuantity(String currentDate) throws ParseException {
         return newOrderRepository.countPrintQuantity(currentDate);

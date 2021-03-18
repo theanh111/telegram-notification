@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
@@ -28,21 +29,27 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         SendAuto();
     }
 
-    private final String token = "1613155455:AAFUgMGk6xFrBVJ4zyreC3oUxyKHF16muJE";
-    private final String username = "printwayioBot";
+    private String token = "1613155455:AAG1WJ3hxXehq9DtX1-hk8MpAc0mYweR5eg";
+//    private String token = "1718882712:AAFeiCrdyZ55TMTSB7xHYVey80V3QlYJNmU";
+//    private String username = "printwayadminbot";
+    private String username = "printwayioBot";
     private final String PRODUCT_GROUP_CHAT_ID = "-1001391001050";
     private final String TECHROOM_GROUP_CHAT_ID = "-1001236402745";
     private final String TEST_GROUP_CHAT_ID = "-1001300395182";
-//    private String CHAT_ID = TEST_GROUP_CHAT_ID;
-    private String CHAT_ID = TECHROOM_GROUP_CHAT_ID;
+    private String CHAT_ID = TEST_GROUP_CHAT_ID;
+//    private String CHAT_ID = TECHROOM_GROUP_CHAT_ID;
 
     @PostConstruct
-    public void registerBot() {
+    public void registerBot() throws TelegramApiRequestException {
         TelegramBotsApi botsApi = new TelegramBotsApi();
         try {
             botsApi.registerBot(this);
-//            SendAuto();
         } catch (TelegramApiException e) {
+            token = "1718882712:AAFeiCrdyZ55TMTSB7xHYVey80V3QlYJNmU";
+            username = "printwayadminbot";
+//            token = "1613155455:AAG1WJ3hxXehq9DtX1-hk8MpAc0mYweR5eg";
+//            username = "printwayioBot";
+            botsApi.registerBot(this);
             e.printStackTrace();
         }
     }
@@ -78,9 +85,9 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                 if (msg.equals("about")) {
                     SendMessage(message,
                             "CÔNG TY TNHH PRINTWAY (PRINTWAY FACTORY)"
-                                    + "\n\n- About Us: https://printway.io");
+                                    + "\n- About Us: https://printway.io");
                 }
-                if (msg.equals("test")) {
+                if (msg.equals("test") && message.getFrom().getId().equals(1631693223)) {
                     SendAuto();
                 }
 //                if (message.hasText()) {
@@ -260,7 +267,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             List<Integer> printedQuantity = newOrderService.countPrintedQuantity(dateEnteredForm);
             List<Integer> packagedQuantity = newOrderService.countPackagedQuantity(dateEnteredForm);
             List<Integer> errorQuantityIn = newOrderService.countErrorQuantityIn(dateEnteredForm);
-            List<Integer> totalOrder = newOrderService.countOrder(dateEnteredForm);
+            List<Integer> totalOrder = newTrackingService.countOrder(dateEnteredForm);
 
             List<Integer> totalLabeled = newTrackingService.countLabeled(dateEnteredForm);
             List<Integer> totalUnlabeled = newTrackingService.countUnlabeled(dateEnteredForm);
@@ -277,55 +284,55 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             BigDecimal shipped;
             BigDecimal unshipped;
 
-            if (printQuantity.size() == 0) {
+            if (printQuantity.size() == 0 || printQuantity.get(0) == null) {
                 print = new BigDecimal(0);
             } else {
                 print = new BigDecimal(String.valueOf(printQuantity.get(0)));
             }
 
-            if (printedQuantity.size() == 0) {
+            if (printedQuantity.size() == 0 || printedQuantity.get(0) == null) {
                 printed = new BigDecimal(0);
             } else {
                 printed = new BigDecimal(String.valueOf(printedQuantity.get(0)));
             }
 
-            if (packagedQuantity.size() == 0) {
+            if (packagedQuantity.size() == 0 || packagedQuantity.get(0) == null) {
                 packaged = new BigDecimal(0);
             } else {
                 packaged = new BigDecimal(String.valueOf(packagedQuantity.get(0)));
             }
 
-            if (errorQuantityIn.size() == 0) {
+            if (errorQuantityIn.size() == 0 || errorQuantityIn.get(0) == null) {
                 error = new BigDecimal(0);
             } else {
                 error = new BigDecimal(String.valueOf(errorQuantityIn.get(0)));
             }
 
-            if (totalOrder.size() == 0) {
+            if (totalOrder.size() == 0 || totalOrder.get(0) == null) {
                 order = new BigDecimal(0);
             } else {
                 order = new BigDecimal(String.valueOf(totalOrder.get(0)));
             }
 
-            if (totalLabeled.size() == 0) {
+            if (totalLabeled.size() == 0 || totalLabeled.get(0) == null) {
                 labeled = new BigDecimal(0);
             } else {
                 labeled = new BigDecimal(String.valueOf(totalLabeled.get(0)));
             }
 
-            if (totalUnlabeled.size() == 0) {
+            if (totalUnlabeled.size() == 0 || totalUnlabeled.get(0) == null) {
                 unlabeled = new BigDecimal(0);
             } else {
                 unlabeled = new BigDecimal(String.valueOf(totalUnlabeled.get(0)));
             }
 
-            if (totalShipped.size() == 0) {
+            if (totalShipped.size() == 0 || totalShipped.get(0) == null) {
                 shipped = new BigDecimal(0);
             } else {
                 shipped = new BigDecimal(String.valueOf(totalShipped.get(0)));
             }
 
-            if (totalUnshipped.size() == 0) {
+            if (totalUnshipped.size() == 0 || totalUnshipped.get(0) == null) {
                 unshipped = new BigDecimal(0);
             } else {
                 unshipped = new BigDecimal(String.valueOf(totalUnshipped.get(0)));
