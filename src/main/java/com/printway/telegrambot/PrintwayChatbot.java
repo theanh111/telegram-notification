@@ -38,10 +38,12 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         SendAuto();
     }
 
-    //    private String username = "printwaytestbot";
+//    private String username = "printwaytestbot";
 //    private String token = "1764851749:AAEDunHSDiNAagUngLqqvKJMzP7KN6dAuEM";
+
     private String token = "1613155455:AAG1WJ3hxXehq9DtX1-hk8MpAc0mYweR5eg";
     private String username = "printwayioBot";
+
 //    private String token = "1718882712:AAFa8WMH6T176FG5omdNwmXW8on-ejXMenI";
 //    private String username = "printwayadminbot";
 
