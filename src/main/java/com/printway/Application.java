@@ -1,6 +1,7 @@
 package com.printway;
 
 import com.printway.exception.BaseResponse;
+import com.printway.telegrambot.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -22,7 +23,7 @@ public class Application extends SpringBootServletInitializer {
 
     private static final Class<Application> applicationClass = Application.class;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         if (System.getProperty("spring.profiles.active") == null) {
             System.setProperty("spring.profiles.active", "prod");
         }

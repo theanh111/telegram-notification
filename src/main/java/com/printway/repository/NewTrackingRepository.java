@@ -22,15 +22,15 @@ public class NewTrackingRepository extends BaseRepository<NewTracking, Integer> 
     @Autowired
     private EntityManagerFactory emf;
 
-    public List<Integer> countOrder(String currentDate) throws ParseException {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT count(order_id) FROM tblnewtracking t where t.dtime_entered like (:dateEnter)";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter", currentDate+"%");
-        List<Integer> totalOrder = query.getResultList();
-        em.close();
-        return totalOrder;
-    }
+//    public List<Integer> countOrder(String currentDate) throws ParseException {
+//        EntityManager em = emf.createEntityManager();
+//        String sqlQuery = "SELECT count(order_id) FROM tblnewtracking t where t.dtime_entered like (:dateEnter)";
+//        Query query = em.createNativeQuery(sqlQuery);
+//        query.setParameter("dateEnter", currentDate+"%");
+//        List<Integer> totalOrder = query.getResultList();
+//        em.close();
+//        return totalOrder;
+//    }
 
     public List<Integer> countLabeled(String currentDate) throws ParseException {
         EntityManager em = emf.createEntityManager();
