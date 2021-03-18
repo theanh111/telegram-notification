@@ -51,6 +51,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
     private final String KIEN_CHAT_ID = "1231177515";
     private final String TUAN_CHAT_ID = "967867808";
     private final String THEANH_CHAT_ID = "1631693223";
+    private final String THANG_CHAT_ID = "1325472968";
 
     private String CHAT_ID = THEANH_CHAT_ID;
 
