@@ -1,26 +1,19 @@
 package com.printway.repository;
 
-import com.printway.entity.NewOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 @Repository
-public class NewOrderRepository extends BaseRepository<NewOrder, Integer> {
-
-    public NewOrderRepository() {
-        super(NewOrder.class);
-    }
-
+public class NewOrderRepository {
     @Autowired
     private EntityManagerFactory emf;
+
+    public NewOrderRepository() {
+    }
 
     public List<Integer> countOrder(String currentDate) {
         EntityManager em = emf.createEntityManager();

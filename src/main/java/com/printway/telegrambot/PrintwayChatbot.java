@@ -138,8 +138,6 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                 }
             }
         }
-
-
     }
 
     public void SendErrorMessage(String text) {
@@ -165,11 +163,11 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
     }
 
     public void SendMessageGroup(String chatId, String text) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setText(text);
-        sendMessage.setParseMode("HTML");
         try {
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(chatId);
+            sendMessage.setText(text);
+            sendMessage.setParseMode("HTML");
             execute(sendMessage);
         } catch (Exception e) {
             e.printStackTrace();

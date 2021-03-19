@@ -1,6 +1,5 @@
 package com.printway;
 
-import com.printway.exception.BaseResponse;
 import com.printway.telegrambot.PrintwayChatbot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,11 +15,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 @SpringBootApplication
 @EnableAsync
 public class Application extends SpringBootServletInitializer {
-    @Bean
-    public BaseResponse baseResponse() {
-        return new BaseResponse();
-    }
-
     private static final Class<Application> applicationClass = Application.class;
 
     public static void main(String[] args) {
