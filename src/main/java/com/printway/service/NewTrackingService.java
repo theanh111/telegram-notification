@@ -31,6 +31,11 @@ public class NewTrackingService implements BasicService<NewTracking>{
         return null;
     }
 
+
+    public List<Integer> countErrorTracking() throws ParseException {
+        return newTrackingRepository.countErrorTracking();
+    }
+
     public List<Integer> countLabeled(String currentDate) throws ParseException {
         return newTrackingRepository.countLabeled(currentDate);
     }

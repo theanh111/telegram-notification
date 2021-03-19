@@ -32,11 +32,21 @@ public class NewTrackingRepository extends BaseRepository<NewTracking, Integer> 
 //        return totalOrder;
 //    }
 
+    public List<Integer> countErrorTracking() throws ParseException {
+        EntityManager em = emf.createEntityManager();
+        String sqlQuery = "SELECT count(multran_log) FROM tblnewtracking WHERE LENGTH(multran_log)>0 AND shipping_country = 'US' AND (LENGTH(partner_tracking_number) is null)";
+        Query query = em.createNativeQuery(sqlQuery);
+        List<Integer> totalErorrTracking = query.getResultList();
+        em.close();
+        return totalErorrTracking;
+    }
+
+
     public List<Integer> countLabeled(String currentDate) throws ParseException {
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT count(order_id) FROM tblnewtracking where labeled = 1 and dtime_entered like (:dateEntered)";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEntered", currentDate+"%");
+        query.setParameter("dateEntered", currentDate + "%");
         List<Integer> totalLabeled = query.getResultList();
         em.close();
         return totalLabeled;
@@ -46,7 +56,7 @@ public class NewTrackingRepository extends BaseRepository<NewTracking, Integer> 
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT count(order_id) FROM tblnewtracking where labeled = 0 and dtime_entered like (:dateEntered)";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEntered", currentDate+"%");
+        query.setParameter("dateEntered", currentDate + "%");
         List<Integer> totalNotLabeled = query.getResultList();
         em.close();
         return totalNotLabeled;
@@ -56,7 +66,7 @@ public class NewTrackingRepository extends BaseRepository<NewTracking, Integer> 
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT count(order_id) FROM tblnewtracking where shipped = 1 and dtime_entered like (:dateEntered)";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEntered", currentDate+"%");
+        query.setParameter("dateEntered", currentDate + "%");
         List<Integer> totalShipped = query.getResultList();
         em.close();
         return totalShipped;
@@ -66,7 +76,7 @@ public class NewTrackingRepository extends BaseRepository<NewTracking, Integer> 
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT count(order_id) FROM tblnewtracking where shipped = 0 and dtime_entered like (:dateEntered)";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEntered", currentDate+"%");
+        query.setParameter("dateEntered", currentDate + "%");
         List<Integer> totalUnshipped = query.getResultList();
         em.close();
         return totalUnshipped;
