@@ -1,5 +1,7 @@
 package com.printway.telegrambot;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.printway.entity.NewOrder;
 import com.printway.service.NewOrderService;
 import com.printway.service.NewTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 @Component
 @EnableScheduling
 public class PrintwayChatbot extends TelegramLongPollingBot {
+    @Scheduled(cron = " 0 0 * ? * *")
+    public void test() throws JsonProcessingException, ParseException {
+        FindNewestOrder();
+    }
+
     @Scheduled(cron = "0 30 17 ? * *")
     public void run() {
         SendAuto(TECHROOM_GROUP_CHAT_ID);
@@ -66,11 +74,14 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
     private String CHAT_ID2 = TEST1_GROUP_CHAT_ID;
 
     @PostConstruct
-    public void registerBot() throws TelegramApiRequestException {
+    public void registerBot() throws TelegramApiRequestException, ParseException {
         TelegramBotsApi botsApi = new TelegramBotsApi();
         try {
             botsApi.registerBot(this);
-        } catch (TelegramApiException e) {
+//            SendAuto(TECHROOM_GROUP_CHAT_ID);
+//            SendAuto(TRACKING_GROUP_CHAT_ID);
+            FindNewestOrder();
+        } catch (TelegramApiException | JsonProcessingException e) {
             token = "1718882712:AAFa8WMH6T176FG5omdNwmXW8on-ejXMenI";
             username = "printwayadminbot";
             botsApi.registerBot(this);
@@ -145,6 +156,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(CHAT_ID2);
             sendMessage.setText(text);
+            sendMessage.setParseMode("HTML");
             execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
@@ -156,8 +168,67 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(message.getChatId().toString());
             sendMessage.setText(text);
+            sendMessage.setParseMode("HTML");
             execute(sendMessage);
         } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void FindNewestOrder() throws JsonProcessingException, ParseException {
+        Date dateCurrent = new Date(System.currentTimeMillis());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateCurrent);
+        calendar.add(Calendar.HOUR_OF_DAY, -1);
+        Date oneHourBack = calendar.getTime();
+        SimpleDateFormat dateTimeDatabaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date1 = dateTimeDatabaseFormat.format(dateCurrent);
+        String date2 = dateTimeDatabaseFormat.format(oneHourBack);
+        String dateTest = "2021-03-19 10:39:40";
+        String dateTest2 = "2021-03-19 10:39:41";
+        Date dateTestDate = dateTimeDatabaseFormat.parse(dateTest);
+        Date dateTestDate2 = dateTimeDatabaseFormat.parse(dateTest2);
+        System.out.println("*** current date: " + date1);
+        System.out.println("*** 1 hour back of current date: " + date2);
+        List<Integer> newOrderList = newOrderService.findNewestOrder(oneHourBack, dateCurrent);
+        BigDecimal totalNewestOrder;
+        if (newOrderList.size() == 0 || newOrderList.get(0) == null) {
+            totalNewestOrder = new BigDecimal(0);
+        } else {
+            totalNewestOrder = new BigDecimal(String.valueOf(newOrderList.get(0)));
+        }
+//        List<NewOrder> newOrderList = newOrderService.findNewestOrder(dateCurrent, oneHourBack);
+//        for (int i = 0; i < newOrderList.size(); i++) {
+//            NewOrder newOrder = newOrderList.get(i);
+//            System.out.println(i + ") " + newOrder);
+//        }
+        String textFormat = "*** <u><b>THÔNG BÁO "
+                + date1
+                + "</b></u> ***"
+                + "\n("
+                + "<code>"
+                + date2
+                + " đến "
+                + date1
+                + "</code>"
+                + ")"
+                + "\n-------------------------"
+                + "\nCó "
+                + "<b>"
+                + totalNewestOrder
+                + "</b>"
+                + " New Order(s)";
+        SendNewestOrder(CHAT_ID, textFormat);
+    }
+
+    public void SendNewestOrder(String chatId, String text) {
+        try {
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(chatId);
+            sendMessage.setText(text);
+            sendMessage.setParseMode("HTML");
+            execute(sendMessage);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

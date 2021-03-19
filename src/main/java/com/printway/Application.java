@@ -10,7 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import org.telegram.telegrambots.meta.generics.BotSession;
 
 @SpringBootApplication
 @EnableAsync
@@ -28,10 +30,11 @@ public class Application extends SpringBootServletInitializer {
             TelegramBotsApi botsApi = new TelegramBotsApi();
             PrintwayChatbot printwayChatbot = new PrintwayChatbot();
             try {
-                botsApi.registerBot(new PrintwayChatbot());
-                printwayChatbot.SendErrorMessage("=== Server Error ===");
+                BotSession botSession = botsApi.registerBot(new PrintwayChatbot());
+                botSession.stop();
+                printwayChatbot.SendErrorMessage("<code> Telegram Notification App Stop - Server Error </code>");
             } catch (TelegramApiRequestException exception) {
-                printwayChatbot.SendErrorMessage("=== Telegram Notification App Error ===");
+                printwayChatbot.SendErrorMessage("<code> Telegram Notification App Error </code>");
                 exception.printStackTrace();
             }
             System.out.println("=== Error ===");
