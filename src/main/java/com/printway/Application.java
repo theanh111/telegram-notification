@@ -37,7 +37,7 @@ public class Application extends SpringBootServletInitializer {
                 botsApi.registerBot(new PrintwayChatbot());
                 printwayChatbot.SendErrorMessage("=== Server Error ===");
             } catch (TelegramApiRequestException exception) {
-                printwayChatbot.SendErrorMessage("=== Telegram Notification Error ===");
+                printwayChatbot.SendErrorMessage("=== Telegram Notification App Error ===");
                 exception.printStackTrace();
             }
             System.out.println("=== Error ===");
