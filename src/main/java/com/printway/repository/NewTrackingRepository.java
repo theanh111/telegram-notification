@@ -32,7 +32,7 @@ public class NewTrackingRepository extends BaseRepository<NewTracking, Integer> 
 //        return totalOrder;
 //    }
 
-    public List<Integer> countErrorTracking() throws ParseException {
+    public List<Integer> countErrorTracking() {
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT count(multran_log) FROM tblnewtracking WHERE LENGTH(multran_log)>0 AND shipping_country = 'US' AND (LENGTH(partner_tracking_number) is null)";
         Query query = em.createNativeQuery(sqlQuery);
@@ -42,9 +42,9 @@ public class NewTrackingRepository extends BaseRepository<NewTracking, Integer> 
     }
 
 
-    public List<Integer> countLabeled(String currentDate) throws ParseException {
+    public List<Integer> countLabeled(String currentDate) {
         EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT count(order_id) FROM tblnewtracking where labeled = 1 and dtime_entered like (:dateEntered)";
+        String sqlQuery = "SELECT COUNT(distinct tblneworders.order_id) FROM tblnewtracking INNER JOIN tblneworders ON tblneworders.order_id=tblnewtracking.order_id WHERE tblnewtracking.labeled = 1 and tblneworders.dtime_entered like (:dateEntered)";
         Query query = em.createNativeQuery(sqlQuery);
         query.setParameter("dateEntered", currentDate + "%");
         List<Integer> totalLabeled = query.getResultList();
@@ -52,9 +52,9 @@ public class NewTrackingRepository extends BaseRepository<NewTracking, Integer> 
         return totalLabeled;
     }
 
-    public List<Integer> countUnlabeled(String currentDate) throws ParseException {
+    public List<Integer> countUnlabeled(String currentDate) {
         EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT count(order_id) FROM tblnewtracking where labeled = 0 and dtime_entered like (:dateEntered)";
+        String sqlQuery = "SELECT COUNT(distinct tblneworders.order_id) FROM tblnewtracking INNER JOIN tblneworders ON tblneworders.order_id=tblnewtracking.order_id WHERE tblnewtracking.labeled = 0 and tblneworders.dtime_entered like (:dateEntered)";
         Query query = em.createNativeQuery(sqlQuery);
         query.setParameter("dateEntered", currentDate + "%");
         List<Integer> totalNotLabeled = query.getResultList();
@@ -62,9 +62,9 @@ public class NewTrackingRepository extends BaseRepository<NewTracking, Integer> 
         return totalNotLabeled;
     }
 
-    public List<Integer> countShipped(String currentDate) throws ParseException {
+    public List<Integer> countShipped(String currentDate) {
         EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT count(order_id) FROM tblnewtracking where shipped = 1 and dtime_entered like (:dateEntered)";
+        String sqlQuery = "SELECT COUNT(distinct tblneworders.order_id) FROM tblnewtracking INNER JOIN tblneworders ON tblneworders.order_id=tblnewtracking.order_id WHERE tblnewtracking.shipped = 1 and tblneworders.dtime_entered like (:dateEntered)";
         Query query = em.createNativeQuery(sqlQuery);
         query.setParameter("dateEntered", currentDate + "%");
         List<Integer> totalShipped = query.getResultList();
@@ -72,9 +72,9 @@ public class NewTrackingRepository extends BaseRepository<NewTracking, Integer> 
         return totalShipped;
     }
 
-    public List<Integer> countUnshipped(String currentDate) throws ParseException {
+    public List<Integer> countUnshipped(String currentDate) {
         EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT count(order_id) FROM tblnewtracking where shipped = 0 and dtime_entered like (:dateEntered)";
+        String sqlQuery = "SELECT COUNT(distinct tblneworders.order_id) FROM tblnewtracking INNER JOIN tblneworders ON tblneworders.order_id=tblnewtracking.order_id WHERE tblnewtracking.shipped = 0 and tblneworders.dtime_entered like (:dateEntered)";
         Query query = em.createNativeQuery(sqlQuery);
         query.setParameter("dateEntered", currentDate + "%");
         List<Integer> totalUnshipped = query.getResultList();

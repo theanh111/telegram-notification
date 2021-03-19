@@ -22,9 +22,9 @@ public class NewOrderRepository extends BaseRepository<NewOrder, Integer> {
     @Autowired
     private EntityManagerFactory emf;
 
-    public List<Integer> countOrder(String currentDate) throws ParseException {
+    public List<Integer> countOrder(String currentDate) {
         EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT count(order_id) FROM tblneworders t where t.dtime_entered like (:dateEnter)";
+        String sqlQuery = "SELECT COUNT(distinct order_id) FROM tblneworders where dtime_entered like (:dateEnter)";
         Query query = em.createNativeQuery(sqlQuery);
         query.setParameter("dateEnter", currentDate+"%");
         List<Integer> totalOrder = query.getResultList();
@@ -32,7 +32,7 @@ public class NewOrderRepository extends BaseRepository<NewOrder, Integer> {
         return totalOrder;
     }
 
-    public List<Integer> countPrintQuantity(String currentDate) throws ParseException {
+    public List<Integer> countPrintQuantity(String currentDate) {
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT sum(print_quantity) FROM tblneworders t where t.dtime_entered like (:dateEnter)";
         Query query = em.createNativeQuery(sqlQuery);
@@ -42,7 +42,7 @@ public class NewOrderRepository extends BaseRepository<NewOrder, Integer> {
         return printQuantity;
     }
 
-    public List<Integer> countPrintedQuantity(String currentDate) throws ParseException {
+    public List<Integer> countPrintedQuantity(String currentDate) {
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT sum(printed_quantity) FROM tblneworders t where t.dtime_entered like (:dateEnter)";
         Query query = em.createNativeQuery(sqlQuery);
@@ -52,7 +52,7 @@ public class NewOrderRepository extends BaseRepository<NewOrder, Integer> {
         return printedQuantity;
     }
 
-    public List<Integer> countPackagedQuantity(String currentDate) throws ParseException {
+    public List<Integer> countPackagedQuantity(String currentDate) {
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT sum(packaged_quantity) FROM tblneworders t where t.dtime_entered like (:dateEnter)";
         Query query = em.createNativeQuery(sqlQuery);
@@ -62,7 +62,7 @@ public class NewOrderRepository extends BaseRepository<NewOrder, Integer> {
         return packagedQuantity;
     }
 
-    public List<Integer> countErrorQuantityIn(String currentDate) throws ParseException {
+    public List<Integer> countErrorQuantityIn(String currentDate) {
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT sum(error_quantity_in) FROM tblneworders t where t.dtime_entered like (:dateEnter)";
         Query query = em.createNativeQuery(sqlQuery);

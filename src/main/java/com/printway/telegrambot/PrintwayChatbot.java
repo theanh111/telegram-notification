@@ -138,6 +138,19 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                 }
             }
         }
+
+
+    }
+
+    public void SendErrorMessage(String text) {
+        try {
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(CHAT_ID2);
+            sendMessage.setText(text);
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     public void SendMessage(Message message, String text) {
