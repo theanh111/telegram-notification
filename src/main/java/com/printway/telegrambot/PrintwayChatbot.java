@@ -139,7 +139,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                         e.printStackTrace();
                     }
                 }
-                if (message.getText().contains("2021-")) {
+                if (message.getText().contains("2021-") && message.getFrom().getId().equals(1631693223)) {
                     try {
                         String dateEnter = message.getText();
                         SimpleDateFormat dateReceivedFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -181,42 +181,6 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         }
     }
 
-    public void FindNewestOrder(String chatId) throws JsonProcessingException, ParseException {
-        Date dateCurrent = new Date(System.currentTimeMillis());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(dateCurrent);
-        calendar.add(Calendar.HOUR_OF_DAY, -1);
-        Date oneHourBack = calendar.getTime();
-        SimpleDateFormat dateTimeDatabaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String dateCurrentString = dateTimeDatabaseFormat.format(dateCurrent);
-        String dateOneHourBackString = dateTimeDatabaseFormat.format(oneHourBack);
-        System.out.println("*** Current date minus 1 hour: " + dateOneHourBackString);
-        System.out.println("*** Current date: " + dateCurrentString);
-        List<Integer> newOrderList = newOrderService.findNewestOrder(dateOneHourBackString, dateCurrentString);
-        BigDecimal totalNewestOrder;
-        if (newOrderList.size() == 0 || newOrderList.get(0) == null) {
-            totalNewestOrder = new BigDecimal(0);
-        } else {
-            totalNewestOrder = new BigDecimal(String.valueOf(newOrderList.get(0)));
-        }
-        String textFormat = "*** <u><b>THÔNG BÁO "
-                + dateCurrentString
-                + "</b></u> ***"
-                + "\n("
-                + "<code>"
-                + dateOneHourBackString
-                + " đến "
-                + dateCurrentString
-                + "</code>"
-                + ")"
-                + "\n-------------------------"
-                + "\nCó "
-                + "<b>"
-                + totalNewestOrder
-                + "</b>"
-                + " New Order(s)";
-        SendNewestOrder(chatId, textFormat);
-    }
 
     public void SendNewestOrder(String chatId, String text) {
         try {
@@ -295,6 +259,60 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
     }
 
+    public void FindNewestOrder(String chatId) throws JsonProcessingException, ParseException {
+        Date dateCurrent = new Date(System.currentTimeMillis());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateCurrent);
+        calendar.add(Calendar.HOUR_OF_DAY, -1);
+        Date oneHourBack = calendar.getTime();
+        SimpleDateFormat dateTimeDatabaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String dateCurrentString = dateTimeDatabaseFormat.format(dateCurrent);
+        String dateOneHourBackString = dateTimeDatabaseFormat.format(oneHourBack);
+        System.out.println("*** Current date minus 1 hour: " + dateOneHourBackString);
+        System.out.println("*** Current date: " + dateCurrentString);
+        List<Integer> newOrderList = newOrderService.findNewestOrder(dateOneHourBackString, dateCurrentString);
+        BigDecimal totalNewestOrder;
+        if (newOrderList.size() == 0 || newOrderList.get(0) == null) {
+            totalNewestOrder = new BigDecimal(0);
+        } else {
+            totalNewestOrder = new BigDecimal(String.valueOf(newOrderList.get(0)));
+        }
+        String textFormatHasOrder = "*** <u><b>THÔNG BÁO "
+                + dateCurrentString
+                + "</b></u> ***"
+                + "\n("
+                + "<code>"
+                + dateOneHourBackString
+                + " đến "
+                + dateCurrentString
+                + "</code>"
+                + ")"
+                + "\n-------------------------"
+                + "\nCó "
+                + "<b>"
+                + totalNewestOrder
+                + "</b>"
+                + " New Order(s)";
+
+        String textFormatNotHasOrder = "*** <u><b>THÔNG BÁO "
+                + dateCurrentString
+                + "</b></u> ***"
+                + "\n("
+                + "<code>"
+                + dateOneHourBackString
+                + " đến "
+                + dateCurrentString
+                + "</code>"
+                + ")"
+                + "\n-------------------------"
+                + "\nKHÔNG CÓ ORDER MỚI!";
+        if (totalNewestOrder.equals(new BigDecimal(0))) {
+            SendNewestOrder(chatId, textFormatNotHasOrder);
+        } else {
+            SendNewestOrder(chatId, textFormatHasOrder);
+        }
+    }
+
     public void SendCountErrorTracking(String chatId) {
         try {
             Date currentDate = new Date(System.currentTimeMillis());
@@ -320,7 +338,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                                 + "<b>"
                                 + totalErrorTracking
                                 + "</b>"
-                                + " Tracking Info Error Cần Update!"
+                                + " Tracking Info Error(s) Cần Update!"
                 );
             }
         } catch (Exception e) {
