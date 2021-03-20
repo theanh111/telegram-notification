@@ -18,10 +18,6 @@ public class NewOrderService {
         return newOrderRepository.findNewestOrder(oneHourBack, currentDate);
     }
 
-//    public List<NewOrder> findNewestOrder(Date currentDate, Date oneHourBack) throws JsonProcessingException {
-//        return newOrderRepository.findNewestOrder(currentDate, oneHourBack);
-//    }
-
     public List<Integer> countOrder(String currentDate) {
         return newOrderRepository.countOrder(currentDate);
     }
