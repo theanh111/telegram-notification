@@ -261,7 +261,9 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         System.out.println("*** Current date: " + dateCurrentString);
         List<Integer> newOrderList = newOrderService.findNewestOrder(dateOneHourBackString, dateCurrentString);
         BigDecimal totalNewestOrder;
-        if (newOrderList.size() > 0 && newOrderList.get(0) != null && newOrderList.get(0) != 0) {
+        BigDecimal zero = new BigDecimal(0);
+        BigDecimal test = new BigDecimal(String.valueOf(newOrderList.get(0)));
+        if (newOrderList.size() > 0 && newOrderList.get(0) != null && !test.equals(zero)) {
             totalNewestOrder = new BigDecimal(String.valueOf(newOrderList.get(0)));
             String textFormatHasOrder = "*** <u><b>THÔNG BÁO "
                     + dateCurrentString
@@ -280,6 +282,9 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                     + "</b>"
                     + " New Order(s)";
             SendNewestOrder(chatId, textFormatHasOrder);
+        } else {
+            System.out.println("== " + dateCurrentString + " ==");
+            System.out.println("== Don't Have Any NEW ORDER ==");
         }
     }
 
@@ -292,7 +297,9 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             String currentDateDisplay = formatter2.format(currentDate);
             List<Integer> errorTrackingQuantity = newTrackingService.countErrorTracking();
             BigDecimal totalErrorTracking;
-            if (errorTrackingQuantity.size() > 0 && errorTrackingQuantity.get(0) != null) {
+            BigDecimal zero = new BigDecimal(0);
+            BigDecimal test = new BigDecimal(String.valueOf(errorTrackingQuantity.get(0)));
+            if (errorTrackingQuantity.size() > 0 && errorTrackingQuantity.get(0) != null && !test.equals(zero)) {
                 totalErrorTracking = new BigDecimal(String.valueOf(errorTrackingQuantity.get(0)));
                 SendMessageGroup(chatId,
                         "*** <u><b>THÔNG BÁO "
@@ -310,6 +317,9 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                                 + "</b>"
                                 + " Tracking Info Error(s) Cần Update!"
                 );
+            } else {
+                System.out.println("== " + currentDateDisplay + " ==");
+                System.out.println("== Don't Have Any Tracking Info Error Need Update ==");
             }
         } catch (Exception e) {
             e.printStackTrace();
