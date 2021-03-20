@@ -14,7 +14,7 @@ public class NewOrderService {
     @Autowired
     private NewOrderRepository newOrderRepository;
 
-    public List<Integer> findNewestOrder(Date oneHourBack, Date currentDate) throws JsonProcessingException {
+    public List<Integer> findNewestOrder(String oneHourBack, String currentDate) throws JsonProcessingException {
         return newOrderRepository.findNewestOrder(oneHourBack, currentDate);
     }
 

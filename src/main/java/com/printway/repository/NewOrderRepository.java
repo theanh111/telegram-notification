@@ -1,14 +1,11 @@
 package com.printway.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.printway.entity.NewOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,12 +17,12 @@ public class NewOrderRepository {
     public NewOrderRepository() {
     }
 
-    public List<Integer> findNewestOrder(Date oneHourBack, Date currentDate) throws JsonProcessingException {
+    public List<Integer> findNewestOrder(String oneHourBack, String currentDate) throws JsonProcessingException {
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT count(distinct order_id) FROM orderdesk.tblneworders WHERE dtime_entered >= :dateOneHourBack and dtime_entered <= :dateCurrent";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateCurrent", currentDate);
-        query.setParameter("dateOneHourBack", oneHourBack);
+        query.setParameter("dateCurrent", currentDate+"%");
+        query.setParameter("dateOneHourBack", oneHourBack+"%");
         List<Integer> totalNewestOrder = query.getResultList();
         em.close();
         return totalNewestOrder;

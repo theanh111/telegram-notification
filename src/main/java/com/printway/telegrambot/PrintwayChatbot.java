@@ -1,7 +1,6 @@
 package com.printway.telegrambot;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.printway.entity.NewOrder;
 import com.printway.service.NewOrderService;
 import com.printway.service.NewTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,24 +29,25 @@ import java.util.List;
 @EnableScheduling
 public class PrintwayChatbot extends TelegramLongPollingBot {
     @Scheduled(cron = " 0 0 * ? * *")
-    public void test() throws JsonProcessingException, ParseException {
-        FindNewestOrder();
+    public void autoFindNewestOrderEveryHour() throws JsonProcessingException, ParseException {
+        FindNewestOrder(TECHROOM_GROUP_CHAT_ID);
+        FindNewestOrder(TRACKING_GROUP_CHAT_ID);
     }
 
     @Scheduled(cron = "0 30 17 ? * *")
-    public void run() {
-        SendAuto(TECHROOM_GROUP_CHAT_ID);
-        SendAuto(TRACKING_GROUP_CHAT_ID);
+    public void autoSendStatistic() {
+        SendStatisticAuto(TECHROOM_GROUP_CHAT_ID);
+        SendStatisticAuto(TRACKING_GROUP_CHAT_ID);
     }
 
     @Scheduled(cron = "0 0 8 ? * *")
-    public void scheduleSendMorning() {
+    public void scheduleCountErrorTracking8AM() {
         SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
         SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
     }
 
     @Scheduled(cron = "0 0 14 ? * *")
-    public void scheduleSendAfternoon() {
+    public void scheduleCountErrorTracking2PM() {
         SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
         SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
     }
@@ -78,10 +78,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         TelegramBotsApi botsApi = new TelegramBotsApi();
         try {
             botsApi.registerBot(this);
-//            SendAuto(TECHROOM_GROUP_CHAT_ID);
-//            SendAuto(TRACKING_GROUP_CHAT_ID);
-            FindNewestOrder();
-        } catch (TelegramApiException | JsonProcessingException e) {
+        } catch (TelegramApiException e) {
             token = "1718882712:AAFa8WMH6T176FG5omdNwmXW8on-ejXMenI";
             username = "printwayadminbot";
             botsApi.registerBot(this);
@@ -131,7 +128,16 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                     SendCountErrorTracking(message.getChatId().toString());
                 }
                 if (msg.equals("auto") && message.getFrom().getId().equals(1631693223)) {
-                    SendAuto(message.getChatId().toString());
+                    SendStatisticAuto(message.getChatId().toString());
+                }
+                if (msg.equals("newest") && message.getFrom().getId().equals(1631693223)) {
+                    try {
+                        FindNewestOrder(message.getChatId().toString());
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
                 if (message.getText().contains("2021-")) {
                     try {
@@ -175,41 +181,32 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         }
     }
 
-    public void FindNewestOrder() throws JsonProcessingException, ParseException {
+    public void FindNewestOrder(String chatId) throws JsonProcessingException, ParseException {
         Date dateCurrent = new Date(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateCurrent);
         calendar.add(Calendar.HOUR_OF_DAY, -1);
         Date oneHourBack = calendar.getTime();
-        SimpleDateFormat dateTimeDatabaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String date1 = dateTimeDatabaseFormat.format(dateCurrent);
-        String date2 = dateTimeDatabaseFormat.format(oneHourBack);
-        String dateTest = "2021-03-19 10:39:40";
-        String dateTest2 = "2021-03-19 10:39:41";
-        Date dateTestDate = dateTimeDatabaseFormat.parse(dateTest);
-        Date dateTestDate2 = dateTimeDatabaseFormat.parse(dateTest2);
-        System.out.println("*** current date: " + date1);
-        System.out.println("*** 1 hour back of current date: " + date2);
-        List<Integer> newOrderList = newOrderService.findNewestOrder(oneHourBack, dateCurrent);
+        SimpleDateFormat dateTimeDatabaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String dateCurrentString = dateTimeDatabaseFormat.format(dateCurrent);
+        String dateOneHourBackString = dateTimeDatabaseFormat.format(oneHourBack);
+        System.out.println("*** Current date minus 1 hour: " + dateOneHourBackString);
+        System.out.println("*** Current date: " + dateCurrentString);
+        List<Integer> newOrderList = newOrderService.findNewestOrder(dateOneHourBackString, dateCurrentString);
         BigDecimal totalNewestOrder;
         if (newOrderList.size() == 0 || newOrderList.get(0) == null) {
             totalNewestOrder = new BigDecimal(0);
         } else {
             totalNewestOrder = new BigDecimal(String.valueOf(newOrderList.get(0)));
         }
-//        List<NewOrder> newOrderList = newOrderService.findNewestOrder(dateCurrent, oneHourBack);
-//        for (int i = 0; i < newOrderList.size(); i++) {
-//            NewOrder newOrder = newOrderList.get(i);
-//            System.out.println(i + ") " + newOrder);
-//        }
         String textFormat = "*** <u><b>THÔNG BÁO "
-                + date1
+                + dateCurrentString
                 + "</b></u> ***"
                 + "\n("
                 + "<code>"
-                + date2
+                + dateOneHourBackString
                 + " đến "
-                + date1
+                + dateCurrentString
                 + "</code>"
                 + ")"
                 + "\n-------------------------"
@@ -218,7 +215,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                 + totalNewestOrder
                 + "</b>"
                 + " New Order(s)";
-        SendNewestOrder(CHAT_ID, textFormat);
+        SendNewestOrder(chatId, textFormat);
     }
 
     public void SendNewestOrder(String chatId, String text) {
@@ -271,9 +268,9 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
     }
 
-    public void SendAuto(String chatId) {
-        SendAutoADayDelay(chatId);
+    public void SendStatisticAuto(String chatId) {
         Date currentDate = new Date(System.currentTimeMillis());
+        SendStatisticAutoADayDelay(chatId, currentDate);
         SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss, E dd/MM/yyyy");
         SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -284,8 +281,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
     }
 
-    public void SendAutoADayDelay(String chatId) {
-        Date currentDate = new Date(System.currentTimeMillis());
+    public void SendStatisticAutoADayDelay(String chatId, Date currentDate) {
         LocalDate localDate = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate aDayDelay = localDate.minusDays(1);
         Date dateDelay = Date.from(aDayDelay.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -293,7 +289,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
         SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateEnteredForm = dateEnteredFormat.format(dateDelay);
-        System.out.println("dateEnteredForm: " + dateEnteredForm);
+        System.out.println("dateEnteredForm A Day Delay: " + dateEnteredForm);
         String dateDisplay = formatter1.format(dateDelay);
         String currentDateDisplay = formatter2.format(dateDelay);
         Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);

@@ -18,7 +18,13 @@ public class NewTrackingRepository  {
 
     public List<Integer> countErrorTracking() {
         EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT count(multran_log) FROM tblnewtracking WHERE LENGTH(multran_log)>0 AND shipping_country = 'US' AND (LENGTH(partner_tracking_number) is null)";
+        String sqlQuery = "SELECT count(multran_log) " +
+                "FROM tblnewtracking " +
+                "WHERE LENGTH(multran_log)>0 " +
+                "AND shipping_country = 'US' " +
+                "AND (LENGTH(partner_tracking_number) is null) " +
+                "AND shipping_city NOT IN ('APO', 'AE', 'FPO','PR', 'VI', 'GU') " +
+                "AND (LENGTH(dtime_last_changed) is null)";
         Query query = em.createNativeQuery(sqlQuery);
         List<Integer> totalErorrTracking = query.getResultList();
         em.close();
