@@ -181,7 +181,6 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         }
     }
 
-
     public void SendNewestOrder(String chatId, String text) {
         try {
             SendMessage sendMessage = new SendMessage();

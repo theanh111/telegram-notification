@@ -67,7 +67,6 @@ public class HibernateConfiguration {
     @Value("${dbcp2.pool-prepared-statements}")
     private boolean DBCP_POOL_PREPARED_STATEMENTS;
 
-    //
     @Primary
     @Bean(name = "printwayDataSource")
     @ConfigurationProperties(prefix = "spring.datasource")
