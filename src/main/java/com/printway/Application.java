@@ -25,17 +25,6 @@ public class Application extends SpringBootServletInitializer {
             ApiContextInitializer.init();
             ApplicationContext ctx = SpringApplication.run(applicationClass, args);
         } catch (Exception e) {
-            TelegramBotsApi botsApi = new TelegramBotsApi();
-            PrintwayChatbot printwayChatbot = new PrintwayChatbot();
-            try {
-                BotSession botSession = botsApi.registerBot(new PrintwayChatbot());
-                botSession.stop();
-                printwayChatbot.SendErrorMessage("<code> Telegram Notification App Stop - Server Error </code>");
-            } catch (TelegramApiRequestException exception) {
-                printwayChatbot.SendErrorMessage("<code> Telegram Notification App Error </code>");
-                exception.printStackTrace();
-            }
-            System.out.println("=== Error ===");
             e.printStackTrace();
         }
     }

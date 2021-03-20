@@ -271,43 +271,24 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         System.out.println("*** Current date: " + dateCurrentString);
         List<Integer> newOrderList = newOrderService.findNewestOrder(dateOneHourBackString, dateCurrentString);
         BigDecimal totalNewestOrder;
-        if (newOrderList.size() == 0 || newOrderList.get(0) == null) {
-            totalNewestOrder = new BigDecimal(0);
-        } else {
+        if (newOrderList.size() > 0 && newOrderList.get(0) != null) {
             totalNewestOrder = new BigDecimal(String.valueOf(newOrderList.get(0)));
-        }
-        String textFormatHasOrder = "*** <u><b>THÔNG BÁO "
-                + dateCurrentString
-                + "</b></u> ***"
-                + "\n("
-                + "<code>"
-                + dateOneHourBackString
-                + " đến "
-                + dateCurrentString
-                + "</code>"
-                + ")"
-                + "\n-------------------------"
-                + "\nCó "
-                + "<b>"
-                + totalNewestOrder
-                + "</b>"
-                + " New Order(s)";
-
-        String textFormatNotHasOrder = "*** <u><b>THÔNG BÁO "
-                + dateCurrentString
-                + "</b></u> ***"
-                + "\n("
-                + "<code>"
-                + dateOneHourBackString
-                + " đến "
-                + dateCurrentString
-                + "</code>"
-                + ")"
-                + "\n-------------------------"
-                + "\nKHÔNG CÓ ORDER MỚI!";
-        if (totalNewestOrder.equals(new BigDecimal(0))) {
-            SendNewestOrder(chatId, textFormatNotHasOrder);
-        } else {
+            String textFormatHasOrder = "*** <u><b>THÔNG BÁO "
+                    + dateCurrentString
+                    + "</b></u> ***"
+                    + "\n("
+                    + "<code>"
+                    + dateOneHourBackString
+                    + " đến "
+                    + dateCurrentString
+                    + "</code>"
+                    + ")"
+                    + "\n-------------------------"
+                    + "\nCó "
+                    + "<b>"
+                    + totalNewestOrder
+                    + "</b>"
+                    + " New Order(s)";
             SendNewestOrder(chatId, textFormatHasOrder);
         }
     }
