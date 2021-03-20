@@ -110,7 +110,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                 String msg = message.getText().toLowerCase();
                 if (msg.contains("hello")) {
                     SendMessage(message,
-                            "Hello!"
+                            "Hello! Have a good day!"
                                     + "\n- Name: @" + message.getFrom().getUserName());
                     System.out.println("=============");
                     System.out.println("- Group Name: " + message.getChat().getTitle());
