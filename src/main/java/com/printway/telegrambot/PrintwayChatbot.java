@@ -30,8 +30,10 @@ import java.util.List;
 public class PrintwayChatbot extends TelegramLongPollingBot {
     @Scheduled(cron = " 0 0 * ? * *")
     public void autoFindNewestOrderEveryHour() throws JsonProcessingException, ParseException {
-        FindNewestOrder(TECHROOM_GROUP_CHAT_ID);
-        FindNewestOrder(TRACKING_GROUP_CHAT_ID);
+//        FindNewestOrder(TECHROOM_GROUP_CHAT_ID);
+//        FindNewestOrder(TRACKING_GROUP_CHAT_ID);
+        FindNewestOrder(TEST1_GROUP_CHAT_ID);
+        FindNewestOrder(TEST2_GROUP_CHAT_ID);
     }
 
     @Scheduled(cron = "0 30 17 ? * *")
@@ -259,7 +261,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         System.out.println("*** Current date: " + dateCurrentString);
         List<Integer> newOrderList = newOrderService.findNewestOrder(dateOneHourBackString, dateCurrentString);
         BigDecimal totalNewestOrder;
-        if (newOrderList.size() > 0 && newOrderList.get(0) != null) {
+        if (newOrderList.size() > 0 && newOrderList.get(0) != null && newOrderList.get(0) != 0) {
             totalNewestOrder = new BigDecimal(String.valueOf(newOrderList.get(0)));
             String textFormatHasOrder = "*** <u><b>THÔNG BÁO "
                     + dateCurrentString
