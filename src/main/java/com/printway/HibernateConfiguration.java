@@ -115,7 +115,7 @@ public class HibernateConfiguration {
         LocalSessionFactoryBuilder localSessionFactoryBean = new LocalSessionFactoryBuilder(printwayDataSource());
         localSessionFactoryBean.scanPackages(
                 "com.printway"
-                );
+        );
         localSessionFactoryBean.buildSessionFactory();
 
         return localSessionFactoryBean;
