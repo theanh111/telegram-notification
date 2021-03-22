@@ -33,48 +33,32 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         FindNewestOrder(TECHROOM_GROUP_CHAT_ID);
         FindNewestOrder(TRACKING_GROUP_CHAT_ID);
     }
-//
-//    @Scheduled(cron = "0 30 17 ? * *")
-//    public void autoSendStatistic() {
-//        SendStatisticAuto(TECHROOM_GROUP_CHAT_ID);
-//        SendStatisticAuto(TRACKING_GROUP_CHAT_ID);
-//    }
-//
-//    @Scheduled(cron = "0 30 8 ? * *")
-//    public void scheduleCountErrorTracking8AM() {
-//        SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
-//        SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
-//    }
-//
-//    @Scheduled(cron = "0 0 14 ? * *")
-//    public void scheduleCountErrorTracking2PM() {
-//        SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
-//        SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
-//    }
+
+    @Scheduled(cron = "0 30 17 ? * *")
+    public void autoSendStatistic() {
+        SendStatisticAuto(TECHROOM_GROUP_CHAT_ID);
+        SendStatisticAuto(TRACKING_GROUP_CHAT_ID);
+    }
+
+    @Scheduled(cron = "0 30 8 ? * *")
+    public void scheduleCountErrorTracking8AM() {
+        SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
+        SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
+    }
+
+    @Scheduled(cron = "0 0 14 ? * *")
+    public void scheduleCountErrorTracking2PM() {
+        SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
+        SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
+    }
 
     private String token = "1613155455:AAG1WJ3hxXehq9DtX1-hk8MpAc0mYweR5eg";
     private String username = "printwayioBot";
-//     // == Backup Bot 1:
-//    private String username = "printwaytestbot";
-//    private String token = "1764851749:AAEDunHSDiNAagUngLqqvKJMzP7KN6dAuEM";
-//     // == Backup Bot 2:
-//    private String token = "1718882712:AAFa8WMH6T176FG5omdNwmXW8on-ejXMenI";
-//    private String username = "printwayadminbot";
-
-    private final String TEST1_GROUP_CHAT_ID = "-1001391001050";
-    private final String TEST2_GROUP_CHAT_ID = "-1001300395182";
     private final String TECHROOM_GROUP_CHAT_ID = "-1001236402745";
     private final String TRACKING_GROUP_CHAT_ID = "-1001276180425";
-    private final String KIEN_CHAT_ID = "1231177515";
-    private final String TUAN_CHAT_ID = "967867808";
-    private final String THEANH_CHAT_ID = "1631693223";
-    private final String THANG_CHAT_ID = "1325472968";
-
-    private String CHAT_ID = THEANH_CHAT_ID;
-    private String CHAT_ID2 = TEST1_GROUP_CHAT_ID;
 
     @PostConstruct
-    public void registerBot() throws TelegramApiRequestException, ParseException {
+    public void registerBot() throws TelegramApiRequestException {
         TelegramBotsApi botsApi = new TelegramBotsApi();
         try {
             botsApi.registerBot(this);
@@ -133,9 +117,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                 if (msg.equals("newest") && message.getFrom().getId().equals(1631693223)) {
                     try {
                         FindNewestOrder(message.getChatId().toString());
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    } catch (ParseException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -144,12 +126,8 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                         String dateEnter = message.getText();
                         SimpleDateFormat dateReceivedFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date dateEntered = dateReceivedFormat.parse(dateEnter);
-                        try {
-                            SendMessageWithInput(message.getChatId().toString(), dateEntered);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } catch (ParseException e) {
+                        SendMessageWithInput(message.getChatId().toString(), dateEntered);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -199,7 +177,6 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
         SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateEnteredForm = dateEnteredFormat.format(dateEntered);
-        System.out.println("dateEnteredForm: " + dateEnteredForm);
         String dateDisplay = formatter1.format(dateEntered);
         String currentDateDisplay = formatter2.format(dateEntered);
         Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
@@ -213,7 +190,6 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
         SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateEnteredForm = dateEnteredFormat.format(dateDelay);
-        System.out.println("dateEnteredForm: " + dateEnteredForm);
         String dateDisplay = formatter1.format(dateDelay);
         String currentDateDisplay = formatter2.format(dateDelay);
         Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
@@ -226,7 +202,6 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss, E dd/MM/yyyy");
         SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateEnteredForm = dateEnteredFormat.format(new Date(System.currentTimeMillis()));
-        System.out.println("dateEnteredForm: " + dateEnteredForm);
         String dateDisplay = formatter1.format(currentDate);
         String currentDateDisplay = formatter2.format(currentDate);
         Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
@@ -240,7 +215,6 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
         SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateEnteredForm = dateEnteredFormat.format(dateDelay);
-        System.out.println("dateEnteredForm A Day Delay: " + dateEnteredForm);
         String dateDisplay = formatter1.format(dateDelay);
         String currentDateDisplay = formatter2.format(dateDelay);
         Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
@@ -255,13 +229,11 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         SimpleDateFormat dateTimeDatabaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String dateCurrentString = dateTimeDatabaseFormat.format(dateCurrent);
         String dateOneHourBackString = dateTimeDatabaseFormat.format(oneHourBack);
-        System.out.println("*** Current date minus 1 hour: " + dateOneHourBackString);
-        System.out.println("*** Current date: " + dateCurrentString);
         List<Integer> newOrderList = newOrderService.findNewestOrder(dateOneHourBackString, dateCurrentString);
         BigDecimal totalNewestOrder;
         BigDecimal zero = new BigDecimal(0);
         BigDecimal test = new BigDecimal(String.valueOf(newOrderList.get(0)));
-        if (newOrderList.size() > 0 && newOrderList.get(0) != null && !test.equals(zero)) {
+        if (newOrderList.get(0) != null && !test.equals(zero)) {
             totalNewestOrder = new BigDecimal(String.valueOf(newOrderList.get(0)));
             String textFormatHasOrder = "*** <u><b>THÔNG BÁO "
                     + dateCurrentString
@@ -297,7 +269,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             BigDecimal totalErrorTracking;
             BigDecimal zero = new BigDecimal(0);
             BigDecimal test = new BigDecimal(String.valueOf(errorTrackingQuantity.get(0)));
-            if (errorTrackingQuantity.size() > 0 && errorTrackingQuantity.get(0) != null && !test.equals(zero)) {
+            if (errorTrackingQuantity.get(0) != null && !test.equals(zero)) {
                 totalErrorTracking = new BigDecimal(String.valueOf(errorTrackingQuantity.get(0)));
                 SendMessageGroup(chatId,
                         "*** <u><b>THÔNG BÁO "
@@ -333,22 +305,11 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             List<Integer> totalOrder = newOrderService.countOrder(dateEnteredForm);
             List<Integer> totalLabeled = newTrackingService.countLabeled(dateEnteredForm);
             List<Integer> totalShipped = newTrackingService.countShipped(dateEnteredForm);
-            BigDecimal orderBD = new BigDecimal(String.valueOf(totalOrder.get(0)));
-            BigDecimal shippedBD = new BigDecimal(String.valueOf(totalShipped.get(0)));
-            BigDecimal labeledBD = new BigDecimal(String.valueOf(totalLabeled.get(0)));
-            BigDecimal totalUnshipped = orderBD.subtract(shippedBD);
-            BigDecimal totalUnlabeled = orderBD.subtract(labeledBD);
-
-            BigDecimal a = new BigDecimal(0);
-            BigDecimal b = new BigDecimal(0);
-            BigDecimal c = a.subtract(b);
-
-            BigDecimal a1 = new BigDecimal(0);
-            BigDecimal b1 = new BigDecimal(25);
-            BigDecimal c1 = a1.subtract(b1);
-
-            System.out.println("c: " + c);
-            System.out.println("c1: " + c1);
+            BigDecimal orders = new BigDecimal(String.valueOf(totalOrder.get(0)));
+            BigDecimal shippeds = new BigDecimal(String.valueOf(totalShipped.get(0)));
+            BigDecimal labeleds = new BigDecimal(String.valueOf(totalLabeled.get(0)));
+            BigDecimal totalUnshipped = orders.subtract(shippeds);
+            BigDecimal totalUnlabeled = orders.subtract(labeleds);
             BigDecimal print;
             BigDecimal printed;
             BigDecimal packaged;
