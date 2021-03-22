@@ -19,15 +19,15 @@ public class NewTrackingService {
         return newTrackingRepository.countLabeled(currentDate);
     }
 
-    public List<Integer> countUnlabeled(String currentDate) {
-        return newTrackingRepository.countUnlabeled(currentDate);
-    }
+//    public List<Integer> countUnlabeled(String currentDate) {
+//        return newTrackingRepository.countUnlabeled(currentDate);
+//    }
 
     public List<Integer> countShipped(String currentDate) {
         return newTrackingRepository.countShipped(currentDate);
     }
 
-    public List<Integer> countUnshipped(String currentDate) {
-        return newTrackingRepository.countUnshipped(currentDate);
-    }
+//    public List<Integer> countUnshipped(String currentDate) {
+//        return newTrackingRepository.countUnshipped(currentDate);
+//    }
 }

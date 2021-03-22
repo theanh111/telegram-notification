@@ -30,29 +30,27 @@ import java.util.List;
 public class PrintwayChatbot extends TelegramLongPollingBot {
     @Scheduled(cron = " 0 0 * ? * *")
     public void autoFindNewestOrderEveryHour() throws JsonProcessingException, ParseException {
-//        FindNewestOrder(TECHROOM_GROUP_CHAT_ID);
-//        FindNewestOrder(TRACKING_GROUP_CHAT_ID);
-        FindNewestOrder(TEST1_GROUP_CHAT_ID);
-        FindNewestOrder(TEST2_GROUP_CHAT_ID);
+        FindNewestOrder(TECHROOM_GROUP_CHAT_ID);
+        FindNewestOrder(TRACKING_GROUP_CHAT_ID);
     }
-
-    @Scheduled(cron = "0 30 17 ? * *")
-    public void autoSendStatistic() {
-        SendStatisticAuto(TECHROOM_GROUP_CHAT_ID);
-        SendStatisticAuto(TRACKING_GROUP_CHAT_ID);
-    }
-
-    @Scheduled(cron = "0 0 8 ? * *")
-    public void scheduleCountErrorTracking8AM() {
-        SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
-        SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
-    }
-
-    @Scheduled(cron = "0 0 14 ? * *")
-    public void scheduleCountErrorTracking2PM() {
-        SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
-        SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
-    }
+//
+//    @Scheduled(cron = "0 30 17 ? * *")
+//    public void autoSendStatistic() {
+//        SendStatisticAuto(TECHROOM_GROUP_CHAT_ID);
+//        SendStatisticAuto(TRACKING_GROUP_CHAT_ID);
+//    }
+//
+//    @Scheduled(cron = "0 30 8 ? * *")
+//    public void scheduleCountErrorTracking8AM() {
+//        SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
+//        SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
+//    }
+//
+//    @Scheduled(cron = "0 0 14 ? * *")
+//    public void scheduleCountErrorTracking2PM() {
+//        SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
+//        SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
+//    }
 
     private String token = "1613155455:AAG1WJ3hxXehq9DtX1-hk8MpAc0mYweR5eg";
     private String username = "printwayioBot";
@@ -334,9 +332,23 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             List<Integer> errorQuantityIn = newOrderService.countErrorQuantityIn(dateEnteredForm);
             List<Integer> totalOrder = newOrderService.countOrder(dateEnteredForm);
             List<Integer> totalLabeled = newTrackingService.countLabeled(dateEnteredForm);
-            List<Integer> totalUnlabeled = newTrackingService.countUnlabeled(dateEnteredForm);
             List<Integer> totalShipped = newTrackingService.countShipped(dateEnteredForm);
-            List<Integer> totalUnshipped = newTrackingService.countUnshipped(dateEnteredForm);
+            BigDecimal orderBD = new BigDecimal(String.valueOf(totalOrder.get(0)));
+            BigDecimal shippedBD = new BigDecimal(String.valueOf(totalShipped.get(0)));
+            BigDecimal labeledBD = new BigDecimal(String.valueOf(totalLabeled.get(0)));
+            BigDecimal totalUnshipped = orderBD.subtract(shippedBD);
+            BigDecimal totalUnlabeled = orderBD.subtract(labeledBD);
+
+            BigDecimal a = new BigDecimal(0);
+            BigDecimal b = new BigDecimal(0);
+            BigDecimal c = a.subtract(b);
+
+            BigDecimal a1 = new BigDecimal(0);
+            BigDecimal b1 = new BigDecimal(25);
+            BigDecimal c1 = a1.subtract(b1);
+
+            System.out.println("c: " + c);
+            System.out.println("c1: " + c1);
             BigDecimal print;
             BigDecimal printed;
             BigDecimal packaged;
@@ -376,20 +388,20 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             } else {
                 labeled = new BigDecimal(String.valueOf(totalLabeled.get(0)));
             }
-            if (totalUnlabeled.size() == 0 || totalUnlabeled.get(0) == null) {
-                unlabeled = new BigDecimal(0);
-            } else {
-                unlabeled = new BigDecimal(String.valueOf(totalUnlabeled.get(0)));
-            }
             if (totalShipped.size() == 0 || totalShipped.get(0) == null) {
                 shipped = new BigDecimal(0);
             } else {
                 shipped = new BigDecimal(String.valueOf(totalShipped.get(0)));
             }
-            if (totalUnshipped.size() == 0 || totalUnshipped.get(0) == null) {
+            if (totalUnlabeled.equals(new BigDecimal(0))) {
+                unlabeled = new BigDecimal(0);
+            } else {
+                unlabeled = new BigDecimal(String.valueOf(totalUnlabeled));
+            }
+            if (totalUnlabeled.equals(new BigDecimal(0))) {
                 unshipped = new BigDecimal(0);
             } else {
-                unshipped = new BigDecimal(String.valueOf(totalUnshipped.get(0)));
+                unshipped = new BigDecimal(String.valueOf(totalUnshipped));
             }
             SendMessageGroup(chatId,
                     "*** <u><b>THỐNG KÊ "

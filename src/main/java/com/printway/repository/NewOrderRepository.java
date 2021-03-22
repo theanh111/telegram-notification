@@ -85,18 +85,43 @@ public class NewOrderRepository {
 //        return newOrderArrayList;
 //    }
 
+
+    // New query
     public List<Integer> countOrder(String currentDate) {
         EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT COUNT(DISTINCT order_id) " +
-                "FROM tblneworders t " +
-                "WHERE t.dtime_entered " +
-                "LIKE (:dateEnter)";
+        String sqlQuery = "SELECT COUNT(1) as totalOrders " +
+                "FROM (" +
+                "SELECT distinct tblneworders.order_id " +
+                "FROM tblneworders " +
+                "WHERE tblneworders.dtime_entered " +
+                "LIKE (:dateEnter) " +
+                "AND tblneworders.order_id " +
+                "IN ( " +
+                "SELECT tblnewtracking.order_id " +
+                "FROM tblnewtracking " +
+                ")) " +
+                "TMP " +
+                "WHERE 1=1 ";
         Query query = em.createNativeQuery(sqlQuery);
         query.setParameter("dateEnter", currentDate+"%");
         List<Integer> totalOrder = query.getResultList();
         em.close();
         return totalOrder;
     }
+
+//    // Old query
+//    public List<Integer> countOrder(String currentDate) {
+//        EntityManager em = emf.createEntityManager();
+//        String sqlQuery = "SELECT COUNT(DISTINCT order_id) " +
+//                "FROM tblneworders t " +
+//                "WHERE t.dtime_entered " +
+//                "LIKE (:dateEnter)";
+//        Query query = em.createNativeQuery(sqlQuery);
+//        query.setParameter("dateEnter", currentDate+"%");
+//        List<Integer> totalOrder = query.getResultList();
+//        em.close();
+//        return totalOrder;
+//    }
 
     public List<Integer> countPrintQuantity(String currentDate) {
         EntityManager em = emf.createEntityManager();

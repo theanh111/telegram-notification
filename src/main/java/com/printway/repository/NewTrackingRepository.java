@@ -33,13 +33,21 @@ public class NewTrackingRepository  {
 
     public List<Integer> countLabeled(String currentDate) {
         EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT COUNT(DISTINCT tblneworders.order_id) " +
-                "FROM tblnewtracking " +
-                "INNER JOIN tblneworders " +
-                "ON tblneworders.order_id=tblnewtracking.order_id " +
-                "WHERE tblnewtracking.labeled = 1 " +
+        String sqlQuery = "SELECT COUNT(1) as totalLabeled " +
+                "FROM (" +
+                "SELECT distinct tblneworders.order_id " +
+                "FROM tblneworders " +
+                "WHERE tblneworders.status_production=6 " +
                 "AND tblneworders.dtime_entered " +
-                "LIKE (:dateEntered)";
+                "LIKE (:dateEntered) " +
+                "AND tblneworders.order_id " +
+                "IN ( " +
+                "SELECT tblnewtracking.order_id " +
+                "FROM tblnewtracking " +
+                "WHERE labeled=1 " +
+                ")) " +
+                "TMP " +
+                "WHERE 1=1 ";
         Query query = em.createNativeQuery(sqlQuery);
         query.setParameter("dateEntered", currentDate + "%");
         List<Integer> totalLabeled = query.getResultList();
@@ -47,31 +55,39 @@ public class NewTrackingRepository  {
         return totalLabeled;
     }
 
-    public List<Integer> countUnlabeled(String currentDate) {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT COUNT(DISTINCT tblneworders.order_id) " +
-                "FROM tblnewtracking " +
-                "INNER JOIN tblneworders " +
-                "ON tblneworders.order_id=tblnewtracking.order_id " +
-                "WHERE tblnewtracking.labeled = 0 " +
-                "AND tblneworders.dtime_entered " +
-                "LIKE (:dateEntered)";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEntered", currentDate + "%");
-        List<Integer> totalNotLabeled = query.getResultList();
-        em.close();
-        return totalNotLabeled;
-    }
+//    public List<Integer> countUnlabeled(String currentDate) {
+//        EntityManager em = emf.createEntityManager();
+//        String sqlQuery = "SELECT COUNT(DISTINCT tblneworders.order_id) " +
+//                "FROM tblnewtracking " +
+//                "INNER JOIN tblneworders " +
+//                "ON tblneworders.order_id=tblnewtracking.order_id " +
+//                "WHERE tblnewtracking.labeled = 0 " +
+//                "AND tblneworders.dtime_entered " +
+//                "LIKE (:dateEntered)";
+//        Query query = em.createNativeQuery(sqlQuery);
+//        query.setParameter("dateEntered", currentDate + "%");
+//        List<Integer> totalNotLabeled = query.getResultList();
+//        em.close();
+//        return totalNotLabeled;
+//    }
 
     public List<Integer> countShipped(String currentDate) {
         EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT COUNT(DISTINCT tblneworders.order_id) " +
-                "FROM tblnewtracking " +
-                "INNER JOIN tblneworders " +
-                "ON tblneworders.order_id = tblnewtracking.order_id " +
-                "WHERE tblnewtracking.shipped = 1 " +
+        String sqlQuery = "SELECT COUNT(1) as totalShipped " +
+                "FROM (" +
+                "SELECT distinct tblneworders.order_id " +
+                "FROM tblneworders " +
+                "WHERE tblneworders.status_production=6 " +
                 "AND tblneworders.dtime_entered " +
-                "LIKE (:dateEntered)";
+                "LIKE (:dateEntered) " +
+                "AND tblneworders.order_id " +
+                "IN ( " +
+                "SELECT tblnewtracking.order_id " +
+                "FROM tblnewtracking " +
+                "WHERE shipped=1 " +
+                ")) " +
+                "TMP " +
+                "WHERE 1=1 ";
         Query query = em.createNativeQuery(sqlQuery);
         query.setParameter("dateEntered", currentDate + "%");
         List<Integer> totalShipped = query.getResultList();
@@ -79,19 +95,19 @@ public class NewTrackingRepository  {
         return totalShipped;
     }
 
-    public List<Integer> countUnshipped(String currentDate) {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT COUNT(DISTINCT tblneworders.order_id) " +
-                "FROM tblnewtracking " +
-                "INNER JOIN tblneworders " +
-                "ON tblneworders.order_id=tblnewtracking.order_id " +
-                "WHERE tblnewtracking.shipped = 0 " +
-                "AND tblneworders.dtime_entered " +
-                "LIKE (:dateEntered)";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEntered", currentDate + "%");
-        List<Integer> totalUnshipped = query.getResultList();
-        em.close();
-        return totalUnshipped;
-    }
+//    public List<Integer> countUnshipped(String currentDate) {
+//        EntityManager em = emf.createEntityManager();
+//        String sqlQuery = "SELECT COUNT(DISTINCT tblneworders.order_id) " +
+//                "FROM tblnewtracking " +
+//                "INNER JOIN tblneworders " +
+//                "ON tblneworders.order_id=tblnewtracking.order_id " +
+//                "WHERE tblnewtracking.shipped = 0 " +
+//                "AND tblneworders.dtime_entered " +
+//                "LIKE (:dateEntered)";
+//        Query query = em.createNativeQuery(sqlQuery);
+//        query.setParameter("dateEntered", currentDate + "%");
+//        List<Integer> totalUnshipped = query.getResultList();
+//        em.close();
+//        return totalUnshipped;
+//    }
 }
