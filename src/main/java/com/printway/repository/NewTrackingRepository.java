@@ -1,80 +1,70 @@
 package com.printway.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import java.util.List;
+
+import java.sql.*;
 
 @Repository
-public class NewTrackingRepository  {
-    @Autowired
-    private EntityManagerFactory emf;
+public class NewTrackingRepository {
+
+    private final String url = "jdbc:mysql://192.168.1.188/orderdesk";
+    private final String username = "theanh";
+    private final String password = "pW@@theanh123";
 
     public NewTrackingRepository() {
     }
 
-    public List<Integer> countErrorTracking() {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT COUNT(multran_log) " +
-                "FROM tblnewtracking nt " +
-                "WHERE LENGTH(multran_log)>0 " +
-                "AND nt.shipping_country = 'US' " +
-                "AND (LENGTH(nt.partner_tracking_number) IS NULL) " +
-                "AND nt.shipping_city NOT IN ('APO', 'AE', 'FPO','PR', 'VI', 'GU') " +
-                "AND (LENGTH(nt.dtime_last_changed) IS NULL)";
-        Query query = em.createNativeQuery(sqlQuery);
-        List<Integer> totalErorrTracking = query.getResultList();
-        em.close();
-        return totalErorrTracking;
+    public Integer countErrorTracking() {
+        Integer totalErrorTracking = null;
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            Statement statement = conn.createStatement();
+            String sqlQuery = "SELECT COUNT(multran_log) as totalErrorTracking FROM tblnewtracking N WHERE LENGTH(multran_log)>0 AND N.shipping_country = 'US' AND (LENGTH(N.partner_tracking_number) IS NULL) AND N.shipping_city NOT IN ('APO', 'AE', 'FPO','PR', 'VI', 'GU') AND (LENGTH(N.dtime_last_changed) IS NULL)";
+            ResultSet rs = statement.executeQuery(sqlQuery);
+            if (rs.next()) {
+                totalErrorTracking = rs.getInt("totalErrorTracking");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return totalErrorTracking;
     }
 
-    public List<Integer> countLabeled(String currentDate) {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT COUNT(1) as totalLabeled " +
-                "FROM (" +
-                "SELECT distinct tblneworders.order_id " +
-                "FROM tblneworders " +
-                "WHERE tblneworders.status_production=6 " +
-                "AND tblneworders.dtime_entered " +
-                "LIKE (:dateEntered) " +
-                "AND tblneworders.order_id " +
-                "IN ( " +
-                "SELECT tblnewtracking.order_id " +
-                "FROM tblnewtracking " +
-                "WHERE labeled=1 " +
-                ")) " +
-                "TMP " +
-                "WHERE 1=1 ";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEntered", currentDate + "%");
-        List<Integer> totalLabeled = query.getResultList();
-        em.close();
+    public Integer countLabeled(String currentDate) {
+        Integer totalLabeled = null;
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            String sqlQuery = "SELECT COUNT(1) as totalLabeled FROM (SELECT distinct O.order_id FROM tblneworders O WHERE O.status_production=6 AND O.dtime_entered LIKE ? AND O.order_id IN (SELECT N.order_id FROM tblnewtracking N )) TMP WHERE 1=1";
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, currentDate+"%");
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                totalLabeled = rs.getInt("totalLabeled");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
         return totalLabeled;
     }
 
-    public List<Integer> countShipped(String currentDate) {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT COUNT(1) as totalShipped " +
-                "FROM (" +
-                "SELECT distinct tblneworders.order_id " +
-                "FROM tblneworders " +
-                "WHERE tblneworders.status_production=6 " +
-                "AND tblneworders.dtime_entered " +
-                "LIKE (:dateEntered) " +
-                "AND tblneworders.order_id " +
-                "IN ( " +
-                "SELECT tblnewtracking.order_id " +
-                "FROM tblnewtracking " +
-                "WHERE shipped=1 " +
-                ")) " +
-                "TMP " +
-                "WHERE 1=1 ";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEntered", currentDate + "%");
-        List<Integer> totalShipped = query.getResultList();
-        em.close();
+    public Integer countShipped(String currentDate) {
+        Integer totalShipped = null;
+
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            String sqlQuery = "SELECT COUNT(1) as totalShipped FROM (SELECT distinct O.order_id FROM tblneworders O WHERE O.status_production=6 AND O.dtime_entered LIKE ? AND O.order_id IN (SELECT N.order_id FROM tblnewtracking N WHERE N.shipped=1)) TMP WHERE 1=1 ";
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, currentDate+"%");
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                totalShipped = rs.getInt("totalShipped");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
         return totalShipped;
     }
 }

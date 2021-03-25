@@ -1,105 +1,125 @@
 package com.printway.repository;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import java.util.List;
+import java.sql.*;
 
 @Repository
 public class NewOrderRepository {
-    @Autowired
-    private EntityManagerFactory emf;
+    private final String url = "jdbc:mysql://192.168.1.188/orderdesk";
+    private final String username = "theanh";
+    private final String password = "pW@@theanh123";
 
     public NewOrderRepository() {
     }
 
-    public List<Integer> findNewestOrder(String oneHourBack, String currentDate) {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT COUNT(DISTINCT order_id) " +
-                "FROM tblneworders t " +
-                "WHERE t.dtime_entered >= :dateOneHourBack AND t.dtime_entered <= :dateCurrent";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateCurrent", currentDate + "%");
-        query.setParameter("dateOneHourBack", oneHourBack + "%");
-        List<Integer> totalNewestOrder = query.getResultList();
-        em.close();
+    public Integer findNewestOrder(String oneHourBack, String currentDate) {
+        Integer totalNewestOrder = null;
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            String sqlQuery = "SELECT COUNT(DISTINCT order_id) as totalNewestOrder FROM tblneworders O WHERE O.dtime_entered >= ? AND O.dtime_entered <= ?";
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, currentDate+"%");
+            statement.setString(2, oneHourBack+"%");
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                totalNewestOrder = rs.getInt("totalNewestOrder");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
         return totalNewestOrder;
     }
 
-    public List<Integer> countOrder(String currentDate) {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT COUNT(1) as totalOrders " +
-                "FROM (" +
-                "SELECT distinct tblneworders.order_id " +
-                "FROM tblneworders " +
-                "WHERE tblneworders.dtime_entered " +
-                "LIKE (:dateEnter) " +
-                "AND tblneworders.order_id " +
-                "IN ( " +
-                "SELECT tblnewtracking.order_id " +
-                "FROM tblnewtracking " +
-                ")) " +
-                "TMP " +
-                "WHERE 1=1 ";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter", currentDate + "%");
-        List<Integer> totalOrder = query.getResultList();
-        em.close();
+    public Integer countOrder(String currentDate) {
+        Integer totalOrder = null;
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            String sqlQuery = "SELECT COUNT(1) as totalOrder FROM (SELECT distinct O.order_id FROM tblneworders O WHERE O.dtime_entered LIKE ? AND O.order_id IN (SELECT N.order_id FROM tblnewtracking N )) TMP WHERE 1=1";
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, currentDate+"%");
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                totalOrder = rs.getInt("totalOrder");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
         return totalOrder;
     }
 
-    public List<Integer> countPrintQuantity(String currentDate) {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT SUM(print_quantity) " +
-                "FROM tblneworders t " +
-                "WHERE t.dtime_entered " +
-                "LIKE (:dateEnter)";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter", currentDate + "%");
-        List<Integer> printQuantity = query.getResultList();
-        em.close();
-        return printQuantity;
+    public Integer countPrintQuantity(String currentDate) {
+        Integer totalPrint = null;
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            String sqlQuery = "SELECT SUM(print_quantity) as totalPrint FROM tblneworders O WHERE O.dtime_entered LIKE ?";
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, currentDate+"%");
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                totalPrint = rs.getInt("totalPrint");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return totalPrint;
     }
 
-    public List<Integer> countPrintedQuantity(String currentDate) {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT SUM(printed_quantity) " +
-                "FROM tblneworders t " +
-                "WHERE t.dtime_entered " +
-                "LIKE (:dateEnter)";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter", currentDate + "%");
-        List<Integer> printedQuantity = query.getResultList();
-        em.close();
-        return printedQuantity;
+    public Integer countPrintedQuantity(String currentDate) {
+        Integer totalPrinted = null;
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            String sqlQuery = "SELECT SUM(printed_quantity) as totalPrinted FROM tblneworders O WHERE O.dtime_entered LIKE ?";
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, currentDate+"%");
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                totalPrinted = rs.getInt("totalPrinted");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return totalPrinted;
     }
 
-    public List<Integer> countPackagedQuantity(String currentDate) {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT SUM(packaged_quantity) " +
-                "FROM tblneworders t " +
-                "WHERE t.dtime_entered " +
-                "LIKE (:dateEnter)";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter", currentDate + "%");
-        List<Integer> packagedQuantity = query.getResultList();
-        em.close();
-        return packagedQuantity;
+    public Integer countPackagedQuantity(String currentDate) {
+        Integer totalPackaged = null;
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            String sqlQuery = "SELECT SUM(packaged_quantity) as totalPackaged FROM tblneworders O WHERE O.dtime_entered LIKE ?";
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, currentDate+"%");
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                totalPackaged = rs.getInt("totalPackaged");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return totalPackaged;
     }
 
-    public List<Integer> countErrorQuantityIn(String currentDate) {
-        EntityManager em = emf.createEntityManager();
-        String sqlQuery = "SELECT SUM(error_quantity_in) " +
-                "FROM tblneworders t " +
-                "WHERE t.dtime_entered " +
-                "LIKE (:dateEnter)";
-        Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter", currentDate + "%");
-        List<Integer> errorQuantityIn = query.getResultList();
-        em.close();
-        return errorQuantityIn;
+    public Integer countErrorQuantityIn(String currentDate) {
+        Integer totalError = null;
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            String sqlQuery = "SELECT SUM(error_quantity_in) as totalError FROM tblneworders O WHERE O.dtime_entered LIKE ?";
+            PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, currentDate+"%");
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                totalError = rs.getInt("totalError");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return totalError;
     }
 }
