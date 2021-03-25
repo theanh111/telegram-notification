@@ -67,8 +67,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             token = "1718882712:AAFa8WMH6T176FG5omdNwmXW8on-ejXMenI";
             username = "printwayadminbot";
             botsApi.registerBot(this);
-            logger.info(e);
-            throw e;
+            logger.error(e);
         }
     }
 
@@ -120,7 +119,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                         Date dateEntered = dateReceivedFormat.parse(dateEnter);
                         SendMessageWithInput(message.getChatId().toString(), dateEntered);
                     } catch (ParseException e) {
-                        logger.info(e);
+                        logger.error(e);
                     }
                 }
             }
@@ -135,7 +134,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             sendMessage.setParseMode("HTML");
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            logger.info(e);
+            logger.error(e);
         }
     }
 
@@ -147,7 +146,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             sendMessage.setParseMode("HTML");
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            logger.info(e);
+            logger.error(e);
         }
     }
 
@@ -159,7 +158,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             sendMessage.setParseMode("HTML");
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            logger.info(e);
+            logger.error(e);
         }
     }
 
