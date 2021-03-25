@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 public class Application {
     @Autowired
     private Environment env;
+
     public static void main(String[] args) {
         ApiContextInitializer.init();
         SpringApplication.run(Application.class, args);
