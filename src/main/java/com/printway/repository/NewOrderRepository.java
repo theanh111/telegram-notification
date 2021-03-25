@@ -1,8 +1,8 @@
 package com.printway.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -16,14 +16,14 @@ public class NewOrderRepository {
     public NewOrderRepository() {
     }
 
-    public List<Integer> findNewestOrder(String oneHourBack, String currentDate) throws JsonProcessingException {
+    public List<Integer> findNewestOrder(String oneHourBack, String currentDate) {
         EntityManager em = emf.createEntityManager();
         String sqlQuery = "SELECT COUNT(DISTINCT order_id) " +
                 "FROM tblneworders t " +
                 "WHERE t.dtime_entered >= :dateOneHourBack AND t.dtime_entered <= :dateCurrent";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateCurrent", currentDate+"%");
-        query.setParameter("dateOneHourBack", oneHourBack+"%");
+        query.setParameter("dateCurrent", currentDate + "%");
+        query.setParameter("dateOneHourBack", oneHourBack + "%");
         List<Integer> totalNewestOrder = query.getResultList();
         em.close();
         return totalNewestOrder;
@@ -45,7 +45,7 @@ public class NewOrderRepository {
                 "TMP " +
                 "WHERE 1=1 ";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter", currentDate+"%");
+        query.setParameter("dateEnter", currentDate + "%");
         List<Integer> totalOrder = query.getResultList();
         em.close();
         return totalOrder;
@@ -58,7 +58,7 @@ public class NewOrderRepository {
                 "WHERE t.dtime_entered " +
                 "LIKE (:dateEnter)";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter", currentDate+"%");
+        query.setParameter("dateEnter", currentDate + "%");
         List<Integer> printQuantity = query.getResultList();
         em.close();
         return printQuantity;
@@ -71,7 +71,7 @@ public class NewOrderRepository {
                 "WHERE t.dtime_entered " +
                 "LIKE (:dateEnter)";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter", currentDate+"%");
+        query.setParameter("dateEnter", currentDate + "%");
         List<Integer> printedQuantity = query.getResultList();
         em.close();
         return printedQuantity;
@@ -84,7 +84,7 @@ public class NewOrderRepository {
                 "WHERE t.dtime_entered " +
                 "LIKE (:dateEnter)";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter",currentDate+"%");
+        query.setParameter("dateEnter", currentDate + "%");
         List<Integer> packagedQuantity = query.getResultList();
         em.close();
         return packagedQuantity;
@@ -97,7 +97,7 @@ public class NewOrderRepository {
                 "WHERE t.dtime_entered " +
                 "LIKE (:dateEnter)";
         Query query = em.createNativeQuery(sqlQuery);
-        query.setParameter("dateEnter", currentDate+"%");
+        query.setParameter("dateEnter", currentDate + "%");
         List<Integer> errorQuantityIn = query.getResultList();
         em.close();
         return errorQuantityIn;

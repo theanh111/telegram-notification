@@ -72,7 +72,6 @@ public class HibernateConfiguration {
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource printwayDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-//        dataSource.setDriverClassName(DB_DRIVER);
         dataSource.setUrl(DB_URL);
         dataSource.setUsername(DB_USERNAME);
         dataSource.setPassword(DB_PASSWORD);

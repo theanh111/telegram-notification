@@ -1,5 +1,6 @@
 package com.printway;
 
+import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -12,17 +13,14 @@ import org.telegram.telegrambots.ApiContextInitializer;
 @EnableAsync
 public class Application extends SpringBootServletInitializer {
     private static final Class<Application> applicationClass = Application.class;
+    private final Logger logger = Logger.getLogger(this.getClass());
 
     public static void main(String[] args) {
-        try {
-            if (System.getProperty("spring.profiles.active") == null) {
-                System.setProperty("spring.profiles.active", "prod");
-            }
-            ApiContextInitializer.init();
-            ApplicationContext ctx = SpringApplication.run(applicationClass, args);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (System.getProperty("spring.profiles.active") == null) {
+            System.setProperty("spring.profiles.active", "prod");
         }
+        ApiContextInitializer.init();
+        ApplicationContext ctx = SpringApplication.run(applicationClass, args);
     }
 
     @Override

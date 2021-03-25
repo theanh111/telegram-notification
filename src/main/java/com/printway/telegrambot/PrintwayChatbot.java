@@ -1,8 +1,8 @@
 package com.printway.telegrambot;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.printway.service.NewOrderService;
 import com.printway.service.NewTrackingService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,7 +29,7 @@ import java.util.List;
 @EnableScheduling
 public class PrintwayChatbot extends TelegramLongPollingBot {
     @Scheduled(cron = " 0 0 * ? * *")
-    public void autoFindNewestOrderEveryHour() throws JsonProcessingException, ParseException {
+    public void autoFindNewestOrderEveryHour() {
         FindNewestOrder(TECHROOM_GROUP_CHAT_ID);
         FindNewestOrder(TRACKING_GROUP_CHAT_ID);
     }
@@ -52,6 +52,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
     }
 
+    private final Logger logger = Logger.getLogger(this.getClass());
     private String token = "1613155455:AAG1WJ3hxXehq9DtX1-hk8MpAc0mYweR5eg";
     private String username = "printwayioBot";
     private final String TECHROOM_GROUP_CHAT_ID = "-1001236402745";
@@ -66,7 +67,8 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             token = "1718882712:AAFa8WMH6T176FG5omdNwmXW8on-ejXMenI";
             username = "printwayadminbot";
             botsApi.registerBot(this);
-            e.printStackTrace();
+            logger.info(e);
+            throw e;
         }
     }
 
@@ -96,12 +98,6 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                     SendMessage(message,
                             "Hello! Have a good day!"
                                     + "\n- Name: @" + message.getFrom().getUserName());
-                    System.out.println("=============");
-                    System.out.println("- Group Name: " + message.getChat().getTitle());
-                    System.out.println("- Chat ID: " + message.getChatId().toString());
-                    System.out.println("- User ID: " + message.getFrom().getId().toString());
-                    System.out.println("- Name: @" + message.getFrom().getUserName());
-                    System.out.println("=============");
                 }
                 if (msg.equals("about")) {
                     SendMessage(message,
@@ -115,11 +111,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                     SendStatisticAuto(message.getChatId().toString());
                 }
                 if (msg.equals("newest") && message.getFrom().getId().equals(1631693223)) {
-                    try {
-                        FindNewestOrder(message.getChatId().toString());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    FindNewestOrder(message.getChatId().toString());
                 }
                 if (message.getText().contains("2021-") && message.getFrom().getId().equals(1631693223)) {
                     try {
@@ -127,8 +119,8 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                         SimpleDateFormat dateReceivedFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date dateEntered = dateReceivedFormat.parse(dateEnter);
                         SendMessageWithInput(message.getChatId().toString(), dateEntered);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        logger.info(e);
                     }
                 }
             }
@@ -143,7 +135,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             sendMessage.setParseMode("HTML");
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            logger.info(e);
         }
     }
 
@@ -154,8 +146,8 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             sendMessage.setText(text);
             sendMessage.setParseMode("HTML");
             execute(sendMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (TelegramApiException e) {
+            logger.info(e);
         }
     }
 
@@ -166,8 +158,8 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             sendMessage.setText(text);
             sendMessage.setParseMode("HTML");
             execute(sendMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (TelegramApiException e) {
+            logger.info(e);
         }
     }
 
@@ -220,7 +212,7 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
     }
 
-    public void FindNewestOrder(String chatId) throws JsonProcessingException, ParseException {
+    public void FindNewestOrder(String chatId) {
         Date dateCurrent = new Date(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateCurrent);
@@ -253,119 +245,24 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                     + " New Order(s)";
             SendNewestOrder(chatId, textFormatHasOrder);
         } else {
-            System.out.println("== " + dateCurrentString + " ==");
-            System.out.println("== Don't Have Any NEW ORDER ==");
+            logger.info("Don't Have Any New Orders!");
         }
     }
 
     public void SendCountErrorTracking(String chatId) {
-        try {
-            Date currentDate = new Date(System.currentTimeMillis());
-            SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
-            SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss, E dd/MM/yyyy");
-            String dateDisplay = formatter1.format(currentDate);
-            String currentDateDisplay = formatter2.format(currentDate);
-            List<Integer> errorTrackingQuantity = newTrackingService.countErrorTracking();
-            BigDecimal totalErrorTracking;
-            BigDecimal zero = new BigDecimal(0);
-            BigDecimal test = new BigDecimal(String.valueOf(errorTrackingQuantity.get(0)));
-            if (errorTrackingQuantity.get(0) != null && !test.equals(zero)) {
-                totalErrorTracking = new BigDecimal(String.valueOf(errorTrackingQuantity.get(0)));
-                SendMessageGroup(chatId,
-                        "*** <u><b>THÔNG BÁO "
-                                + dateDisplay
-                                + "</b></u> ***"
-                                + "\n("
-                                + "<code>"
-                                + currentDateDisplay
-                                + "</code>"
-                                + ")"
-                                + "\n-------------------------"
-                                + "\nCó "
-                                + "<b>"
-                                + totalErrorTracking
-                                + "</b>"
-                                + " Tracking Info Error(s) Cần Update!"
-                );
-            } else {
-                System.out.println("== " + currentDateDisplay + " ==");
-                System.out.println("== Don't Have Any Tracking Info Error Need Update ==");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void Form(String chatId, String dateEnteredForm, String dateDisplay, String currentDateDisplay) {
-        try {
-            List<Integer> printQuantity = newOrderService.countPrintQuantity(dateEnteredForm);
-            List<Integer> printedQuantity = newOrderService.countPrintedQuantity(dateEnteredForm);
-            List<Integer> packagedQuantity = newOrderService.countPackagedQuantity(dateEnteredForm);
-            List<Integer> errorQuantityIn = newOrderService.countErrorQuantityIn(dateEnteredForm);
-            List<Integer> totalOrder = newOrderService.countOrder(dateEnteredForm);
-            List<Integer> totalLabeled = newTrackingService.countLabeled(dateEnteredForm);
-            List<Integer> totalShipped = newTrackingService.countShipped(dateEnteredForm);
-            BigDecimal orders = new BigDecimal(String.valueOf(totalOrder.get(0)));
-            BigDecimal shippeds = new BigDecimal(String.valueOf(totalShipped.get(0)));
-            BigDecimal labeleds = new BigDecimal(String.valueOf(totalLabeled.get(0)));
-            BigDecimal totalUnshipped = orders.subtract(shippeds);
-            BigDecimal totalUnlabeled = orders.subtract(labeleds);
-            BigDecimal print;
-            BigDecimal printed;
-            BigDecimal packaged;
-            BigDecimal error;
-            BigDecimal order;
-            BigDecimal labeled;
-            BigDecimal unlabeled;
-            BigDecimal shipped;
-            BigDecimal unshipped;
-            if (printQuantity.size() == 0 || printQuantity.get(0) == null) {
-                print = new BigDecimal(0);
-            } else {
-                print = new BigDecimal(String.valueOf(printQuantity.get(0)));
-            }
-            if (printedQuantity.size() == 0 || printedQuantity.get(0) == null) {
-                printed = new BigDecimal(0);
-            } else {
-                printed = new BigDecimal(String.valueOf(printedQuantity.get(0)));
-            }
-            if (packagedQuantity.size() == 0 || packagedQuantity.get(0) == null) {
-                packaged = new BigDecimal(0);
-            } else {
-                packaged = new BigDecimal(String.valueOf(packagedQuantity.get(0)));
-            }
-            if (errorQuantityIn.size() == 0 || errorQuantityIn.get(0) == null) {
-                error = new BigDecimal(0);
-            } else {
-                error = new BigDecimal(String.valueOf(errorQuantityIn.get(0)));
-            }
-            if (totalOrder.size() == 0 || totalOrder.get(0) == null) {
-                order = new BigDecimal(0);
-            } else {
-                order = new BigDecimal(String.valueOf(totalOrder.get(0)));
-            }
-            if (totalLabeled.size() == 0 || totalLabeled.get(0) == null) {
-                labeled = new BigDecimal(0);
-            } else {
-                labeled = new BigDecimal(String.valueOf(totalLabeled.get(0)));
-            }
-            if (totalShipped.size() == 0 || totalShipped.get(0) == null) {
-                shipped = new BigDecimal(0);
-            } else {
-                shipped = new BigDecimal(String.valueOf(totalShipped.get(0)));
-            }
-            if (totalUnlabeled.equals(new BigDecimal(0))) {
-                unlabeled = new BigDecimal(0);
-            } else {
-                unlabeled = new BigDecimal(String.valueOf(totalUnlabeled));
-            }
-            if (totalUnlabeled.equals(new BigDecimal(0))) {
-                unshipped = new BigDecimal(0);
-            } else {
-                unshipped = new BigDecimal(String.valueOf(totalUnshipped));
-            }
+        Date currentDate = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss, E dd/MM/yyyy");
+        String dateDisplay = formatter1.format(currentDate);
+        String currentDateDisplay = formatter2.format(currentDate);
+        List<Integer> errorTrackingQuantity = newTrackingService.countErrorTracking();
+        BigDecimal totalErrorTracking;
+        BigDecimal zero = new BigDecimal(0);
+        BigDecimal test = new BigDecimal(String.valueOf(errorTrackingQuantity.get(0)));
+        if (errorTrackingQuantity.get(0) != null && !test.equals(zero)) {
+            totalErrorTracking = new BigDecimal(String.valueOf(errorTrackingQuantity.get(0)));
             SendMessageGroup(chatId,
-                    "*** <u><b>THỐNG KÊ "
+                    "*** <u><b>THÔNG BÁO "
                             + dateDisplay
                             + "</b></u> ***"
                             + "\n("
@@ -374,46 +271,131 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                             + "</code>"
                             + ")"
                             + "\n-------------------------"
-                            + "\nTotal Print: "
+                            + "\nCó "
                             + "<b>"
-                            + print
+                            + totalErrorTracking
                             + "</b>"
-                            + "\nPrinted: "
-                            + "<b>"
-                            + printed
-                            + "</b>"
-                            + "\nPackaged: "
-                            + "<b>"
-                            + packaged
-                            + "</b>"
-                            + "\nError: "
-                            + "<b>"
-                            + error
-                            + "</b>"
-                            + "\n-------------------------"
-                            + "\nTotal Order: "
-                            + "<b>"
-                            + order
-                            + "</b>"
-                            + "\nLabeled: "
-                            + "<b>"
-                            + labeled
-                            + "</b>"
-                            + "\nUnlabeled: "
-                            + "<b>"
-                            + unlabeled
-                            + "</b>"
-                            + "\nShipped: "
-                            + "<b>"
-                            + shipped
-                            + "</b>"
-                            + "\nUnshipped: "
-                            + "<b>"
-                            + unshipped
-                            + "</b>"
+                            + " Tracking Info Error(s) Cần Update!"
             );
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            logger.info("Don't Have Any Tracking Info Errors Need Update!");
         }
+    }
+
+    public void Form(String chatId, String dateEnteredForm, String dateDisplay, String currentDateDisplay) {
+        List<Integer> printQuantity = newOrderService.countPrintQuantity(dateEnteredForm);
+        List<Integer> printedQuantity = newOrderService.countPrintedQuantity(dateEnteredForm);
+        List<Integer> packagedQuantity = newOrderService.countPackagedQuantity(dateEnteredForm);
+        List<Integer> errorQuantityIn = newOrderService.countErrorQuantityIn(dateEnteredForm);
+        List<Integer> totalOrder = newOrderService.countOrder(dateEnteredForm);
+        List<Integer> totalLabeled = newTrackingService.countLabeled(dateEnteredForm);
+        List<Integer> totalShipped = newTrackingService.countShipped(dateEnteredForm);
+        BigDecimal orders = new BigDecimal(String.valueOf(totalOrder.get(0)));
+        BigDecimal shippeds = new BigDecimal(String.valueOf(totalShipped.get(0)));
+        BigDecimal labeleds = new BigDecimal(String.valueOf(totalLabeled.get(0)));
+        BigDecimal totalUnshipped = orders.subtract(shippeds);
+        BigDecimal totalUnlabeled = orders.subtract(labeleds);
+        BigDecimal print;
+        BigDecimal printed;
+        BigDecimal packaged;
+        BigDecimal error;
+        BigDecimal order;
+        BigDecimal labeled;
+        BigDecimal unlabeled;
+        BigDecimal shipped;
+        BigDecimal unshipped;
+        if (printQuantity.size() == 0 || printQuantity.get(0) == null) {
+            print = new BigDecimal(0);
+        } else {
+            print = new BigDecimal(String.valueOf(printQuantity.get(0)));
+        }
+        if (printedQuantity.size() == 0 || printedQuantity.get(0) == null) {
+            printed = new BigDecimal(0);
+        } else {
+            printed = new BigDecimal(String.valueOf(printedQuantity.get(0)));
+        }
+        if (packagedQuantity.size() == 0 || packagedQuantity.get(0) == null) {
+            packaged = new BigDecimal(0);
+        } else {
+            packaged = new BigDecimal(String.valueOf(packagedQuantity.get(0)));
+        }
+        if (errorQuantityIn.size() == 0 || errorQuantityIn.get(0) == null) {
+            error = new BigDecimal(0);
+        } else {
+            error = new BigDecimal(String.valueOf(errorQuantityIn.get(0)));
+        }
+        if (totalOrder.size() == 0 || totalOrder.get(0) == null) {
+            order = new BigDecimal(0);
+        } else {
+            order = new BigDecimal(String.valueOf(totalOrder.get(0)));
+        }
+        if (totalLabeled.size() == 0 || totalLabeled.get(0) == null) {
+            labeled = new BigDecimal(0);
+        } else {
+            labeled = new BigDecimal(String.valueOf(totalLabeled.get(0)));
+        }
+        if (totalShipped.size() == 0 || totalShipped.get(0) == null) {
+            shipped = new BigDecimal(0);
+        } else {
+            shipped = new BigDecimal(String.valueOf(totalShipped.get(0)));
+        }
+        if (totalUnlabeled.equals(new BigDecimal(0))) {
+            unlabeled = new BigDecimal(0);
+        } else {
+            unlabeled = new BigDecimal(String.valueOf(totalUnlabeled));
+        }
+        if (totalUnlabeled.equals(new BigDecimal(0))) {
+            unshipped = new BigDecimal(0);
+        } else {
+            unshipped = new BigDecimal(String.valueOf(totalUnshipped));
+        }
+        SendMessageGroup(chatId,
+                "*** <u><b>THỐNG KÊ "
+                        + dateDisplay
+                        + "</b></u> ***"
+                        + "\n("
+                        + "<code>"
+                        + currentDateDisplay
+                        + "</code>"
+                        + ")"
+                        + "\n-------------------------"
+                        + "\nTotal Print: "
+                        + "<b>"
+                        + print
+                        + "</b>"
+                        + "\nPrinted: "
+                        + "<b>"
+                        + printed
+                        + "</b>"
+                        + "\nPackaged: "
+                        + "<b>"
+                        + packaged
+                        + "</b>"
+                        + "\nError: "
+                        + "<b>"
+                        + error
+                        + "</b>"
+                        + "\n-------------------------"
+                        + "\nTotal Order: "
+                        + "<b>"
+                        + order
+                        + "</b>"
+                        + "\nLabeled: "
+                        + "<b>"
+                        + labeled
+                        + "</b>"
+                        + "\nUnlabeled: "
+                        + "<b>"
+                        + unlabeled
+                        + "</b>"
+                        + "\nShipped: "
+                        + "<b>"
+                        + shipped
+                        + "</b>"
+                        + "\nUnshipped: "
+                        + "<b>"
+                        + unshipped
+                        + "</b>"
+        );
     }
 }

@@ -1,7 +1,5 @@
 package com.printway.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.printway.entity.NewOrder;
 import com.printway.repository.NewOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +12,7 @@ public class NewOrderService {
     @Autowired
     private NewOrderRepository newOrderRepository;
 
-    public List<Integer> findNewestOrder(String oneHourBack, String currentDate) throws JsonProcessingException {
+    public List<Integer> findNewestOrder(String oneHourBack, String currentDate) {
         return newOrderRepository.findNewestOrder(oneHourBack, currentDate);
     }
 
