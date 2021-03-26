@@ -35,16 +35,19 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         FindNewestOrder(TECHROOM_GROUP_CHAT_ID);
         FindNewestOrder(TRACKING_GROUP_CHAT_ID);
     }
+
     @Scheduled(cron = "0 30 17 ? * *")
     public void autoSendStatistic() {
         SendStatisticAuto(TECHROOM_GROUP_CHAT_ID);
         SendStatisticAuto(TRACKING_GROUP_CHAT_ID);
     }
+
     @Scheduled(cron = "0 30 8 ? * *")
     public void scheduleCountErrorTracking8AM() {
         SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
         SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
     }
+
     @Scheduled(cron = "0 0 14 ? * *")
     public void scheduleCountErrorTracking2PM() {
         SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
@@ -67,14 +70,17 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
     private NewOrderService newOrderService;
     @Autowired
     private NewTrackingService newTrackingService;
+
     @Override
     public String getBotUsername() {
         return username;
     }
+
     @Override
     public String getBotToken() {
         return token;
     }
+
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
@@ -150,95 +156,149 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
     }
 
     public void SendMessageWithInput(String chatId, Date dateEntered) {
-        SendMessageWithInputADayDelay(chatId, dateEntered);
-        SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
-        SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dateEnteredForm = dateEnteredFormat.format(dateEntered);
-        String dateDisplay = formatter1.format(dateEntered);
-        String currentDateDisplay = formatter2.format(dateEntered);
-        Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
+        try {
+            SendMessageWithInputADayDelay(chatId, dateEntered);
+            SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
+            SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateEnteredForm = dateEnteredFormat.format(dateEntered);
+            String dateDisplay = formatter1.format(dateEntered);
+            String currentDateDisplay = formatter2.format(dateEntered);
+            Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void SendMessageWithInputADayDelay(String chatId, Date dateEntered) {
-        LocalDate localDate = dateEntered.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate aDayDelay = localDate.minusDays(1);
-        Date dateDelay = Date.from(aDayDelay.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
-        SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dateEnteredForm = dateEnteredFormat.format(dateDelay);
-        String dateDisplay = formatter1.format(dateDelay);
-        String currentDateDisplay = formatter2.format(dateDelay);
-        Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
+        try {
+            LocalDate localDate = dateEntered.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate aDayDelay = localDate.minusDays(1);
+            Date dateDelay = Date.from(aDayDelay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
+            SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateEnteredForm = dateEnteredFormat.format(dateDelay);
+            String dateDisplay = formatter1.format(dateDelay);
+            String currentDateDisplay = formatter2.format(dateDelay);
+            Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void SendStatisticAuto(String chatId) {
-        Date currentDate = new Date(System.currentTimeMillis());
-        SendStatisticAutoADayDelay(chatId, currentDate);
-        SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss, E dd/MM/yyyy");
-        SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dateEnteredForm = dateEnteredFormat.format(new Date(System.currentTimeMillis()));
-        String dateDisplay = formatter1.format(currentDate);
-        String currentDateDisplay = formatter2.format(currentDate);
-        Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
+        try {
+            Date currentDate = new Date(System.currentTimeMillis());
+            SendStatisticAutoADayDelay(chatId, currentDate);
+            SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss, E dd/MM/yyyy");
+            SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateEnteredForm = dateEnteredFormat.format(new Date(System.currentTimeMillis()));
+            String dateDisplay = formatter1.format(currentDate);
+            String currentDateDisplay = formatter2.format(currentDate);
+            Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void SendStatisticAutoADayDelay(String chatId, Date currentDate) {
-        LocalDate localDate = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate aDayDelay = localDate.minusDays(1);
-        Date dateDelay = Date.from(aDayDelay.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
-        SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dateEnteredForm = dateEnteredFormat.format(dateDelay);
-        String dateDisplay = formatter1.format(dateDelay);
-        String currentDateDisplay = formatter2.format(dateDelay);
-        Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
+        try {
+            LocalDate localDate = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate aDayDelay = localDate.minusDays(1);
+            Date dateDelay = Date.from(aDayDelay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
+            SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateEnteredForm = dateEnteredFormat.format(dateDelay);
+            String dateDisplay = formatter1.format(dateDelay);
+            String currentDateDisplay = formatter2.format(dateDelay);
+            Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void FindNewestOrder(String chatId) {
-        Date dateCurrent = new Date(System.currentTimeMillis());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(dateCurrent);
-        calendar.add(Calendar.HOUR_OF_DAY, -1);
-        Date oneHourBack = calendar.getTime();
-        SimpleDateFormat dateTimeDatabaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String dateCurrentString = dateTimeDatabaseFormat.format(dateCurrent);
-        String dateOneHourBackString = dateTimeDatabaseFormat.format(oneHourBack);
-        Integer totalNewestOrder = newOrderService.findNewestOrder(dateOneHourBackString, dateCurrentString);
-        if (totalNewestOrder != null && totalNewestOrder > 0) {
-            String textFormatHasOrder = "*** <u><b>THÔNG BÁO "
-                    + dateCurrentString
-                    + "</b></u> ***"
-                    + "\n("
-                    + "<code>"
-                    + dateOneHourBackString
-                    + " đến "
-                    + dateCurrentString
-                    + "</code>"
-                    + ")"
-                    + "\n-------------------------"
-                    + "\nCó "
-                    + "<b>"
-                    + totalNewestOrder
-                    + "</b>"
-                    + " New Order(s)";
-            SendNewestOrder(chatId, textFormatHasOrder);
+        try {
+            Date dateCurrent = new Date(System.currentTimeMillis());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dateCurrent);
+            calendar.add(Calendar.HOUR_OF_DAY, -1);
+            Date oneHourBack = calendar.getTime();
+            SimpleDateFormat dateTimeDatabaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            String dateCurrentString = dateTimeDatabaseFormat.format(dateCurrent);
+            String dateOneHourBackString = dateTimeDatabaseFormat.format(oneHourBack);
+            Integer totalNewestOrder = newOrderService.findNewestOrder(dateOneHourBackString, dateCurrentString);
+            if (totalNewestOrder != null && totalNewestOrder > 0) {
+                String textFormatHasOrder = "*** <u><b>THÔNG BÁO "
+                        + dateCurrentString
+                        + "</b></u> ***"
+                        + "\n("
+                        + "<code>"
+                        + dateOneHourBackString
+                        + " đến "
+                        + dateCurrentString
+                        + "</code>"
+                        + ")"
+                        + "\n-------------------------"
+                        + "\nCó "
+                        + "<b>"
+                        + totalNewestOrder
+                        + "</b>"
+                        + " New Order(s)";
+                SendNewestOrder(chatId, textFormatHasOrder);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void SendCountErrorTracking(String chatId) {
-        Date currentDate = new Date(System.currentTimeMillis());
-        SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss, E dd/MM/yyyy");
-        String dateDisplay = formatter1.format(currentDate);
-        String currentDateDisplay = formatter2.format(currentDate);
-        Integer errorTrackingQuantity = newTrackingService.countErrorTracking();
-        if (errorTrackingQuantity != null && errorTrackingQuantity > 0) {
+        try {
+            Date currentDate = new Date(System.currentTimeMillis());
+            SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss, E dd/MM/yyyy");
+            String dateDisplay = formatter1.format(currentDate);
+            String currentDateDisplay = formatter2.format(currentDate);
+            Integer errorTrackingQuantity = newTrackingService.countErrorTracking();
+            if (errorTrackingQuantity != null && errorTrackingQuantity > 0) {
+                SendMessageGroup(chatId,
+                        "*** <u><b>THÔNG BÁO "
+                                + dateDisplay
+                                + "</b></u> ***"
+                                + "\n("
+                                + "<code>"
+                                + currentDateDisplay
+                                + "</code>"
+                                + ")"
+                                + "\n-------------------------"
+                                + "\nCó "
+                                + "<b>"
+                                + errorTrackingQuantity
+                                + "</b>"
+                                + " Tracking Info Error(s) Cần Update!"
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void Form(String chatId, String dateEnteredForm, String dateDisplay, String currentDateDisplay) {
+        try {
+            Integer print = newOrderService.countPrintQuantity(dateEnteredForm);
+            Integer printed = newOrderService.countPrintedQuantity(dateEnteredForm);
+            Integer packaged = newOrderService.countPackagedQuantity(dateEnteredForm);
+            Integer error = newOrderService.countErrorQuantityIn(dateEnteredForm);
+            Integer order = newOrderService.countOrder(dateEnteredForm);
+            Integer labeled = newTrackingService.countLabeled(dateEnteredForm);
+            Integer shipped = newTrackingService.countShipped(dateEnteredForm);
+            Integer unshipped = order - shipped;
+            Integer unlabeled = order - labeled;
             SendMessageGroup(chatId,
-                    "*** <u><b>THÔNG BÁO "
+                    "*** <u><b>THỐNG KÊ "
                             + dateDisplay
                             + "</b></u> ***"
                             + "\n("
@@ -247,72 +307,46 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
                             + "</code>"
                             + ")"
                             + "\n-------------------------"
-                            + "\nCó "
+                            + "\nTotal Print: "
                             + "<b>"
-                            + errorTrackingQuantity
+                            + print
                             + "</b>"
-                            + " Tracking Info Error(s) Cần Update!"
+                            + "\nPrinted: "
+                            + "<b>"
+                            + printed
+                            + "</b>"
+                            + "\nPackaged: "
+                            + "<b>"
+                            + packaged
+                            + "</b>"
+                            + "\nError: "
+                            + "<b>"
+                            + error
+                            + "</b>"
+                            + "\n-------------------------"
+                            + "\nTotal Order: "
+                            + "<b>"
+                            + order
+                            + "</b>"
+                            + "\nLabeled: "
+                            + "<b>"
+                            + labeled
+                            + "</b>"
+                            + "\nUnlabeled: "
+                            + "<b>"
+                            + unlabeled
+                            + "</b>"
+                            + "\nShipped: "
+                            + "<b>"
+                            + shipped
+                            + "</b>"
+                            + "\nUnshipped: "
+                            + "<b>"
+                            + unshipped
+                            + "</b>"
             );
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
-
-    public void Form(String chatId, String dateEnteredForm, String dateDisplay, String currentDateDisplay) {
-        Integer print = newOrderService.countPrintQuantity(dateEnteredForm);
-        Integer printed = newOrderService.countPrintedQuantity(dateEnteredForm);
-        Integer packaged = newOrderService.countPackagedQuantity(dateEnteredForm);
-        Integer error = newOrderService.countErrorQuantityIn(dateEnteredForm);
-        Integer order = newOrderService.countOrder(dateEnteredForm);
-        Integer labeled = newTrackingService.countLabeled(dateEnteredForm);
-        Integer shipped = newTrackingService.countShipped(dateEnteredForm);
-        Integer unshipped = order - shipped;
-        Integer unlabeled = order - labeled;
-        SendMessageGroup(chatId,
-                "*** <u><b>THỐNG KÊ "
-                        + dateDisplay
-                        + "</b></u> ***"
-                        + "\n("
-                        + "<code>"
-                        + currentDateDisplay
-                        + "</code>"
-                        + ")"
-                        + "\n-------------------------"
-                        + "\nTotal Print: "
-                        + "<b>"
-                        + print
-                        + "</b>"
-                        + "\nPrinted: "
-                        + "<b>"
-                        + printed
-                        + "</b>"
-                        + "\nPackaged: "
-                        + "<b>"
-                        + packaged
-                        + "</b>"
-                        + "\nError: "
-                        + "<b>"
-                        + error
-                        + "</b>"
-                        + "\n-------------------------"
-                        + "\nTotal Order: "
-                        + "<b>"
-                        + order
-                        + "</b>"
-                        + "\nLabeled: "
-                        + "<b>"
-                        + labeled
-                        + "</b>"
-                        + "\nUnlabeled: "
-                        + "<b>"
-                        + unlabeled
-                        + "</b>"
-                        + "\nShipped: "
-                        + "<b>"
-                        + shipped
-                        + "</b>"
-                        + "\nUnshipped: "
-                        + "<b>"
-                        + unshipped
-                        + "</b>"
-        );
     }
 }
