@@ -13,6 +13,7 @@ import org.telegram.telegrambots.ApiContextInitializer;
 
 import javax.sql.DataSource;
 
+
 @SpringBootApplication
 @AutoConfigurationPackage
 @PropertySources({ @PropertySource("classpath:application.properties") })
