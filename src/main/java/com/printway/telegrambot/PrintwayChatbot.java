@@ -228,12 +228,14 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
             calendar.add(Calendar.HOUR_OF_DAY, -1);
             Date oneHourBack = calendar.getTime();
             SimpleDateFormat dateTimeDatabaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
+            String dateDisplay = formatter1.format(dateCurrent);
             String dateCurrentString = dateTimeDatabaseFormat.format(dateCurrent);
             String dateOneHourBackString = dateTimeDatabaseFormat.format(oneHourBack);
             Integer totalNewestOrder = newOrderService.findNewestOrder(dateOneHourBackString, dateCurrentString);
             if (totalNewestOrder != null && totalNewestOrder > 0) {
                 String textFormatHasOrder = "*** <u><b>THÔNG BÁO "
-                        + dateCurrentString
+                        + dateDisplay
                         + "</b></u> ***"
                         + "\n("
                         + "<code>"
