@@ -1,6 +1,5 @@
 package com.printway;
 
-import com.printway.telegrambot.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
@@ -34,7 +33,5 @@ public class Application {
     public static void main(String[] args) {
         ApiContextInitializer.init();
         SpringApplication.run(Application.class, args);
-        Test test = new Test();
-        test.configHttp();
     }
 }
