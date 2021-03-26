@@ -59,6 +59,8 @@ public class PrintwayChatbot extends TelegramLongPollingBot {
         TelegramBotsApi botsApi = new TelegramBotsApi();
         try {
             botsApi.registerBot(this);
+            SendCountErrorTracking(TECHROOM_GROUP_CHAT_ID);
+            SendCountErrorTracking(TRACKING_GROUP_CHAT_ID);
         } catch (TelegramApiException e) {
             token = "1718882712:AAFa8WMH6T176FG5omdNwmXW8on-ejXMenI";
             username = "printwayadminbot";
