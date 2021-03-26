@@ -18,11 +18,6 @@ public class Application {
     @Autowired
     private Environment env;
 
-    public static void main(String[] args) {
-        ApiContextInitializer.init();
-        SpringApplication.run(Application.class, args);
-    }
-
     @Bean(name = "dataSource")
     public DataSource getDataSource()  {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -31,5 +26,10 @@ public class Application {
         dataSource.setUsername(env.getProperty("spring.datasource.username"));
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
         return dataSource;
+    }
+
+    public static void main(String[] args) {
+        ApiContextInitializer.init();
+        SpringApplication.run(Application.class, args);
     }
 }

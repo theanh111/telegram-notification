@@ -1,9 +1,13 @@
 package com.printway.repository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
 import java.sql.*;
 
 @Repository
 public class NewOrderRepository {
+
     private final String url = "jdbc:mysql://192.168.1.188/orderdesk";
     private final String username = "theanh";
     private final String password = "pW@@theanh123";
