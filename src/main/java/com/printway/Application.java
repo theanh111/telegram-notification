@@ -1,7 +1,9 @@
 package com.printway;
 
+import com.printway.telegrambot.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -13,6 +15,7 @@ import org.telegram.telegrambots.ApiContextInitializer;
 import javax.sql.DataSource;
 
 @SpringBootApplication
+@AutoConfigurationPackage
 @PropertySources({ @PropertySource("classpath:application.properties") })
 public class Application {
     @Autowired
@@ -31,5 +34,7 @@ public class Application {
     public static void main(String[] args) {
         ApiContextInitializer.init();
         SpringApplication.run(Application.class, args);
+        Test test = new Test();
+        test.configHttp();
     }
 }
