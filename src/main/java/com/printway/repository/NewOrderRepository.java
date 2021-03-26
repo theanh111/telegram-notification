@@ -1,16 +1,26 @@
 package com.printway.repository;
+import com.printway.config.Database;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
 
 @Repository
 public class NewOrderRepository {
-
-    private final String url = "jdbc:mysql://192.168.1.188/orderdesk";
-    private final String username = "theanh";
-    private final String password = "pW@@theanh123";
+    private final String url = getDatabase().getUrl();
+    private final String username = getDatabase().getUsername();
+    private final String password = getDatabase().getPassword();
 
     public NewOrderRepository() {
+    }
+
+    public Database getDatabase() {
+        Database database = new Database();
+        database.getUrl();
+        database.getUsername();
+        database.getPassword();
+        return database;
     }
 
     public Integer findNewestOrder(String oneHourBack, String currentDate) {
