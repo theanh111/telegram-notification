@@ -5,12 +5,9 @@ import com.printway.service.NewTrackingService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,8 +18,8 @@ public class PrintwayChatbotTracking extends TelegramLongPollingBot {
         countErrorTracking();
     }
 
-    private final String TECHROOM_GROUP_CHAT_ID = "-1001236402745";
-    private final String TRACKING_GROUP_CHAT_ID = "-1001276180425";
+    private final String TECHROOM_GROUP_CHAT_ID = new PrintwayChatbotConfig().getTECHROOM_GROUP_CHAT_ID();
+    private final String TRACKING_GROUP_CHAT_ID = new PrintwayChatbotConfig().getTRACKING_GROUP_CHAT_ID();
 
     private NewOrderService newOrderService = new NewOrderService();
     private NewTrackingService newTrackingService = new NewTrackingService();
@@ -72,23 +69,6 @@ public class PrintwayChatbotTracking extends TelegramLongPollingBot {
             execute(sendMessage);
         } catch (TelegramApiException e) {
             System.err.println(e.getMessage());
-        }
-    }
-
-    public void SendMessageWithInputADayDelay(String chatId, Date dateEntered) {
-        try {
-            LocalDate localDate = dateEntered.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            LocalDate aDayDelay = localDate.minusDays(1);
-            Date dateDelay = Date.from(aDayDelay.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            SimpleDateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
-            SimpleDateFormat formatter2 = new SimpleDateFormat("E dd/MM/yyyy");
-            SimpleDateFormat dateEnteredFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String dateEnteredForm = dateEnteredFormat.format(dateDelay);
-            String dateDisplay = formatter1.format(dateDelay);
-            String currentDateDisplay = formatter2.format(dateDelay);
-            Form(chatId, dateEnteredForm, dateDisplay, currentDateDisplay);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -155,70 +135,6 @@ public class PrintwayChatbotTracking extends TelegramLongPollingBot {
                                 + " Tracking Info Error(s) Cần Update!"
                 );
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void Form(String chatId, String dateEnteredForm, String dateDisplay, String currentDateDisplay) {
-        try {
-            Integer print = newOrderService.countPrintQuantity(dateEnteredForm);
-            Integer printed = newOrderService.countPrintedQuantity(dateEnteredForm);
-            Integer packaged = newOrderService.countPackagedQuantity(dateEnteredForm);
-            Integer error = newOrderService.countErrorQuantityIn(dateEnteredForm);
-            Integer order = newOrderService.countOrder(dateEnteredForm);
-            Integer labeled = newTrackingService.countLabeled(dateEnteredForm);
-            Integer shipped = newTrackingService.countShipped(dateEnteredForm);
-            Integer unshipped = order - shipped;
-            Integer unlabeled = order - labeled;
-            SendMessageGroup(chatId,
-                    "*** <u><b>THỐNG KÊ "
-                            + dateDisplay
-                            + "</b></u> ***"
-                            + "\n("
-                            + "<code>"
-                            + currentDateDisplay
-                            + "</code>"
-                            + ")"
-                            + "\n-------------------------"
-                            + "\nTotal Print: "
-                            + "<b>"
-                            + print
-                            + "</b>"
-                            + "\nPrinted: "
-                            + "<b>"
-                            + printed
-                            + "</b>"
-                            + "\nPackaged: "
-                            + "<b>"
-                            + packaged
-                            + "</b>"
-                            + "\nError: "
-                            + "<b>"
-                            + error
-                            + "</b>"
-                            + "\n-------------------------"
-                            + "\nTotal Order: "
-                            + "<b>"
-                            + order
-                            + "</b>"
-                            + "\nLabeled: "
-                            + "<b>"
-                            + labeled
-                            + "</b>"
-                            + "\nUnlabeled: "
-                            + "<b>"
-                            + unlabeled
-                            + "</b>"
-                            + "\nShipped: "
-                            + "<b>"
-                            + shipped
-                            + "</b>"
-                            + "\nUnshipped: "
-                            + "<b>"
-                            + unshipped
-                            + "</b>"
-            );
         } catch (Exception e) {
             e.printStackTrace();
         }

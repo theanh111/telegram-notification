@@ -5,7 +5,6 @@ import com.printway.service.NewTrackingService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.text.SimpleDateFormat;
@@ -19,8 +18,8 @@ public class PrintwayChatbotStatistic extends TelegramLongPollingBot {
         autoSendStatistic();
     }
 
-    private final String TECHROOM_GROUP_CHAT_ID = "-1001236402745";
-    private final String TRACKING_GROUP_CHAT_ID = "-1001276180425";
+    private final String TECHROOM_GROUP_CHAT_ID = new PrintwayChatbotConfig().getTECHROOM_GROUP_CHAT_ID();
+    private final String TRACKING_GROUP_CHAT_ID = new PrintwayChatbotConfig().getTRACKING_GROUP_CHAT_ID();
 
     private NewOrderService newOrderService = new NewOrderService();
     private NewTrackingService newTrackingService = new NewTrackingService();
