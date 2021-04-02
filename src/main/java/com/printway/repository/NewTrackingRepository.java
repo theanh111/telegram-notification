@@ -1,12 +1,8 @@
 package com.printway.repository;
 
 import com.printway.config.Database;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import java.sql.*;
 
-@Repository
 public class NewTrackingRepository {
     private final String url = getDatabase().getUrl();
     private final String username = getDatabase().getUsername();

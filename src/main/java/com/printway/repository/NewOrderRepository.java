@@ -1,12 +1,8 @@
 package com.printway.repository;
-import com.printway.config.Database;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
-import javax.xml.crypto.Data;
+import com.printway.config.Database;
 import java.sql.*;
 
-@Repository
 public class NewOrderRepository {
     private final String url = getDatabase().getUrl();
     private final String username = getDatabase().getUsername();
@@ -29,8 +25,8 @@ public class NewOrderRepository {
             Connection conn = DriverManager.getConnection(url, username, password);
             String sqlQuery = "SELECT COUNT(DISTINCT order_id) as totalNewestOrder FROM tblneworders O WHERE O.dtime_entered >= ? AND O.dtime_entered <= ?";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, currentDate+"%");
-            statement.setString(2, oneHourBack+"%");
+            statement.setString(1, currentDate + "%");
+            statement.setString(2, oneHourBack + "%");
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 totalNewestOrder = rs.getInt("totalNewestOrder");
@@ -48,7 +44,7 @@ public class NewOrderRepository {
             Connection conn = DriverManager.getConnection(url, username, password);
             String sqlQuery = "SELECT COUNT(1) as totalOrder FROM (SELECT distinct O.order_id FROM tblneworders O WHERE O.dtime_entered LIKE ? AND O.order_id IN (SELECT N.order_id FROM tblnewtracking N )) TMP WHERE 1=1";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, currentDate+"%");
+            statement.setString(1, currentDate + "%");
 
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
@@ -67,7 +63,7 @@ public class NewOrderRepository {
             Connection conn = DriverManager.getConnection(url, username, password);
             String sqlQuery = "SELECT SUM(print_quantity) as totalPrint FROM tblneworders O WHERE O.dtime_entered LIKE ?";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, currentDate+"%");
+            statement.setString(1, currentDate + "%");
 
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
@@ -86,7 +82,7 @@ public class NewOrderRepository {
             Connection conn = DriverManager.getConnection(url, username, password);
             String sqlQuery = "SELECT SUM(printed_quantity) as totalPrinted FROM tblneworders O WHERE O.dtime_entered LIKE ?";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, currentDate+"%");
+            statement.setString(1, currentDate + "%");
 
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
@@ -105,7 +101,7 @@ public class NewOrderRepository {
             Connection conn = DriverManager.getConnection(url, username, password);
             String sqlQuery = "SELECT SUM(packaged_quantity) as totalPackaged FROM tblneworders O WHERE O.dtime_entered LIKE ?";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, currentDate+"%");
+            statement.setString(1, currentDate + "%");
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 totalPackaged = rs.getInt("totalPackaged");
@@ -123,7 +119,7 @@ public class NewOrderRepository {
             Connection conn = DriverManager.getConnection(url, username, password);
             String sqlQuery = "SELECT SUM(error_quantity_in) as totalError FROM tblneworders O WHERE O.dtime_entered LIKE ?";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, currentDate+"%");
+            statement.setString(1, currentDate + "%");
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 totalError = rs.getInt("totalError");
