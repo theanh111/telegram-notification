@@ -17,9 +17,8 @@ import java.util.Date;
 @Component
 public class PrintwayChatbotTracking extends TelegramLongPollingBot {
     public void runThis() {
-//        autoFindNewestOrderEveryHour();
-//        countErrorTracking();
-        SendCountErrorTracking("1631693223");
+        autoFindNewestOrderEveryHour();
+        countErrorTracking();
     }
 
     private final String TECHROOM_GROUP_CHAT_ID = "-1001236402745";
