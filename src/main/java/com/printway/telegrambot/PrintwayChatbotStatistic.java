@@ -18,7 +18,7 @@ import java.util.Date;
 @Component
 public class PrintwayChatbotStatistic extends TelegramLongPollingBot {
     public void runThis() {
-        SendStatisticAuto("1631693223");
+        SendStatisticAuto(TRACKING_GROUP_CHAT_ID);
         System.out.println("Bot running auto");
     }
 
@@ -26,6 +26,7 @@ public class PrintwayChatbotStatistic extends TelegramLongPollingBot {
     private String username = "printwayadminbot";
     private final String TECHROOM_GROUP_CHAT_ID = "-1001236402745";
     private final String TRACKING_GROUP_CHAT_ID = "-1001276180425";
+    private final String TEST_GROUP_CHAT_ID = "-1001391001050";
 
     private NewOrderService newOrderService = new NewOrderService();
     private NewTrackingService newTrackingService = new NewTrackingService();

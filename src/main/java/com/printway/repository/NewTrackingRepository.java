@@ -24,7 +24,13 @@ public class NewTrackingRepository {
         try {
             Connection conn = DriverManager.getConnection(url, username, password);
             Statement statement = conn.createStatement();
-            String sqlQuery = "SELECT COUNT(multran_log) as totalErrorTracking FROM tblnewtracking N WHERE LENGTH(multran_log)>0 AND N.shipping_country = 'US' AND (LENGTH(N.partner_tracking_number) IS NULL) AND N.shipping_city NOT IN ('APO', 'AE', 'FPO','PR', 'VI', 'GU') AND (LENGTH(N.dtime_last_changed) IS NULL)";
+            String sqlQuery = "SELECT COUNT(multran_log) as totalErrorTracking " +
+                    "FROM tblnewtracking N " +
+                    "WHERE LENGTH(multran_log) > 0 " +
+                    "AND N.shipping_country = 'US' " +
+                    "AND (LENGTH(N.partner_tracking_number) = 0 OR N.partner_tracking_number IS NULL) " +
+                    "AND N.shipping_city NOT IN ('APO', 'AE', 'FPO','PR', 'VI', 'GU') " +
+                    "AND (LENGTH(N.dtime_last_changed) IS NULL);";
             ResultSet rs = statement.executeQuery(sqlQuery);
             if (rs.next()) {
                 totalErrorTracking = rs.getInt("totalErrorTracking");

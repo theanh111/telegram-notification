@@ -1,6 +1,7 @@
 package com.printway;
 
 import com.printway.telegrambot.PrintwayChatbot;
+import com.printway.telegrambot.PrintwayChatbotCountError;
 import com.printway.telegrambot.PrintwayChatbotStatistic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ExitCodeGenerator;
@@ -40,27 +41,42 @@ public class Application {
 
         for (String s : args) {
             if (s.equals("tracking")) {
-                System.out.println("tracking");
                 ApiContextInitializer.init();
                 TelegramBotsApi botsApi = new TelegramBotsApi();
                 try {
                     PrintwayChatbot bot = new PrintwayChatbot();
                     botsApi.registerBot(bot);
                     bot.runThis();
+                    System.out.println("Send Tracking Error To Group Chat!");
                 } catch (TelegramApiRequestException exception) {
-                    System.out.println("error");
+                    exception.printStackTrace();
+                    System.exit(0);
                 }
             }
             if (s.equals("auto")) {
-                System.out.println("auto");
                 ApiContextInitializer.init();
                 TelegramBotsApi botsApi = new TelegramBotsApi();
                 try {
                     PrintwayChatbotStatistic bot = new PrintwayChatbotStatistic();
                     botsApi.registerBot(bot);
                     bot.runThis();
+                    System.out.println("Send Statistic To Group Chat!");
                 } catch (TelegramApiRequestException exception) {
-                    System.out.println("error");
+                    exception.printStackTrace();
+                    System.exit(0);
+                }
+            }
+            if (s.equals("error")) {
+                ApiContextInitializer.init();
+                TelegramBotsApi botsApi = new TelegramBotsApi();
+                try {
+                    PrintwayChatbotCountError bot = new PrintwayChatbotCountError();
+                    botsApi.registerBot(bot);
+                    bot.runThis();
+                    System.out.println("Send Error Orders To Group Chat!");
+                } catch (TelegramApiRequestException exception) {
+                    exception.printStackTrace();
+                    System.exit(0);
                 }
             }
         }
